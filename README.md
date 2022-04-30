@@ -16,7 +16,7 @@
 
   a) Depending on your system features follow the [ installation guide ](https://afni.nimh.nih.gov/pub/dist/doc/htmldoc/background_install/install_instructs/index.html). Also, make sure to install NMT atlases with `@Install_NMT`
 
-  b) If you are familiar with singularity/docker we previde you with are singularity recipe to build a container with a complete installation of AFNI:
+  b) If you are familiar with singularity/docker you can use our singularity recipe to build a container with a complete installation of AFNI:
 
   - Clone this repository with `git clone`
   - navigate to the utils folder: ```cd utils```
