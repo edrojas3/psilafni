@@ -1,6 +1,6 @@
-# <ins> **PRIME-DE preproc with AFNI**</ins>
+# **PRIME-DE preprocessing with AFNI**
 
-![](https://github.com/edrojas3/psilafni/blob/main/media/monkey3.png)
+![](https://github.com/edrojas3/psilafni/blob/main/media/monkey3.png?raw=true)
 
 ### Description:
 

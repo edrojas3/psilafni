@@ -1,0 +1,153 @@
+Bootstrap: docker
+From: ubuntu:20.04
+
+
+#--------------- import atlas for @SSWarper -----------------------------------
+%files
+
+MNI152_T1_2mm_brain.nii.gz /opt
+MNI152_T1_2mm.nii.gz       /opt
+MNI152_T1_2mm_template1.0_SSW.nii.gz /opt
+MNI152_T1_2mm_ventricle_mask.nii.gz /opt
+NMT_v2.0_sym_05mm_template1.0_SSW.nii.gz /opt
+libs/*deb /opt
+
+# -----------set environmental variable to avoid user interaction--------------
+%environment
+DEBIAN_FRONTEND="noninteractive"
+
+# ----------------------- INSTALL DEPENDENCIES --------------------------------
+
+%post
+
+  # ---------------- Set time zone --------------------------------------------
+  apt-get update && apt-get install -y tzdata  keyboard-configuration
+
+  ln -sf /usr/share/zoneinfo/America/Mexico /etc/localtime
+
+
+
+#  --------------------------Lets install R first -----------------------------
+
+apt update -y && \
+apt install -y dirmngr gnupg apt-transport-https ca-certificates build-essential \
+software-properties-common
+
+ apt-key adv --keyserver keyserver.ubuntu.com --recv-keys \
+ E298A3A825C0D65DFD57CBB651716619E084DAB9
+ add-apt-repository -y 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/'
+
+apt install -y r-base
+
+
+
+  # ----------------- Software dependencies------------------------------------
+
+add-apt-repository -y universe
+add-apt-repository -y "ppa:marutter/rrutter4.0"
+add-apt-repository -y "ppa:c2d4u.team/c2d4u4.0+"
+
+  apt-get -y update && \
+  apt-get install -y   bc tcsh xfonts-base libssl-dev     \
+                        python-is-python3 python3-pip     \
+                        python3-matplotlib python3-numpy  \
+                        python3-scipy python3-pillow      \
+                        gsl-bin netpbm gnome-tweak-tool   \
+                        libjpeg62 xvfb xterm vim curl     \
+                        gedit evince eog                  \
+                        libglu1-mesa-dev libglw1-mesa     \
+                        libxm4 build-essential            \
+                        libcurl4-openssl-dev libxml2-dev  \
+                        libgfortran-8-dev libgomp1        \
+                        gnome-terminal nautilus           \
+                        gnome-icon-theme-symbolic         \
+                        firefox xfonts-100dpi             \
+                        r-base-dev cmake libgsl-dev       \
+                        libgdal-dev libopenblas-dev       \
+                        libnode-dev libudunits2-dev       \
+                        libgfortran4
+
+ #---------- create symbolic link for dependencies ----------------------------
+%post
+ln -s /usr/lib/x86_64-linux-gnu/libgsl.so.23 /usr/lib/x86_64-linux-gnu/libgsl.so.19
+
+#----------------------- download and install afni binaries -------------------
+    # -------------- create directory for afni---------------
+
+    mkdir -p /AFNI/abin
+    mkdir -p /AFNI/R
+    export R_LIBS=/AFNI/R
+
+    cd /AFNI
+    touch .cshrc
+    touch .bashrc
+
+  #-------------- Download AFNI binaries --------------------------------------
+  curl -O https://afni.nimh.nih.gov/pub/dist/bin/misc/@update.afni.binaries
+
+  # install AFNI
+  tcsh @update.afni.binaries -package linux_ubuntu_16_64 -do_extras -bindir \
+  ${PWD}/abin
+
+
+# ------ TIME TO INSTALL R packages  ----------------------------------------
+
+%post
+
+Rscript -e "install.packages(c('Rcpp','brms'), dependencies = TRUE, \
+INSTALL_opts = '--no-lock')"
+
+  Rscript -e "install.packages(c('afex','phia','snow','afex','paran','corrplot',\
+  'metafor', 'shiny', 'circos','nlme','lmerTest'))"
+
+
+
+
+
+# -------------------------- post instalation----------------------------------
+
+
+echo "# auto-inserted by @update.afni.binaries :
+echo "export PATH=/AFNI/abin:$PATH" >> /AFNI/.bashrc
+
+echo "# auto-inserted by @update.afni.binaries :
+# set up tab completion for AFNI programs
+echo "if [ -f /AFNI.afni/help/all_progs.COMP.bash ]
+then
+   source /AFNI.afni/help/all_progs.COMP.bash
+fi" >> /AFNI/.bashrc
+
+# ------------------------ Install NMT atlas ----------------------------------
+
+tcsh /AFNI/abin/@Install_NMT -install_dir /AFNI -sym sym
+tcsh /AFNI/abin/@Install_NMT -install_dir /AFNI -sym asym
+
+# copy the NNT templates to the abin folder
+
+find /AFNI -name "NMT*.nii.gz" -exec cp {} /AFNI/abin \;
+
+mv /opt/*.nii.gz /AFNI/abin
+
+
+# -----------------------fix issue with matplotlib in python-------------------
+
+update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+
+python -m pip install -U matplotlib scipy numpy pillow
+
+# ------- SOURCE THE ENVIRONMENT----------------------------------------------
+
+%environment
+
+# afni binaries
+#atlas directories
+export PATH='/AFNI/abin':$PATH
+export NMT_sym_dir='/AFNI/NMT_v2.1_sym/NMT_v2.1_sym_05mm'
+export NMT_asym_dir='/AFNI/NMT_v2.1_asym/NMT_v2.1_asym'
+export R_LIBS='/AFNI/R'
+
+# ------------- Command to execute with  the container call -------------------
+%runscript
+
+
+afni -version
