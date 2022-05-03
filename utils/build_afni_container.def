@@ -2,15 +2,6 @@ Bootstrap: docker
 From: ubuntu:20.04
 
 
-#--------------- import atlas for @SSWarper -----------------------------------
-%files
-
-MNI152_T1_2mm_brain.nii.gz /opt
-MNI152_T1_2mm.nii.gz       /opt
-MNI152_T1_2mm_template1.0_SSW.nii.gz /opt
-MNI152_T1_2mm_ventricle_mask.nii.gz /opt
-NMT_v2.0_sym_05mm_template1.0_SSW.nii.gz /opt
-libs/*deb /opt
 
 # -----------set environmental variable to avoid user interaction--------------
 %environment
@@ -126,9 +117,17 @@ tcsh /AFNI/abin/@Install_NMT -install_dir /AFNI -sym asym
 
 find /AFNI -name "NMT*.nii.gz" -exec cp {} /AFNI/abin \;
 
-mv /opt/*.nii.gz /AFNI/abin
+# Dowload some files for sswarper
 
+cd /AFNI/abin
 
+wget https://github.com/edrojas3/psilafni/raw/main/utils/MNI152_T1_2mm.nii.gz
+wget https://github.com/edrojas3/psilafni/raw/main/utils/MNI152_T1_2mm_brain.nii.gz
+wget https://github.com/edrojas3/psilafni/raw/main/utils/MNI152_T1_2mm_template1.0_SSW.nii.gz
+wget https://github.com/edrojas3/psilafni/raw/main/utils/MNI152_T1_2mm_ventricle_mask.nii.gz
+wget https://github.com/edrojas3/psilafni/raw/main/utils/NMT_v2.0_sym_05mm_template1.0_SSW.nii.gz
+
+cd /AFNI
 # -----------------------fix issue with matplotlib in python-------------------
 
 update-alternatives --install /usr/bin/python python /usr/bin/python3 1
