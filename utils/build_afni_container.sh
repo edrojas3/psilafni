@@ -28,7 +28,8 @@ echo
 
 
 
- singularity build --remote -F /misc/purcell/alfonso/tmp/container/tmp/afni.sif build_afni_container.def
+ singularity build --remote -F /misc/purcell/alfonso/tmp/container/tmp/afni.sif \
+ /misc/purcell/alfonso/tmp/github/psilafni/utils/build_afni_container.def
 
 if [  -f /misc/purcell/alfonso/tmp/container/tmp/afni.sif ]
 then
@@ -38,7 +39,7 @@ echo
 echo
 echo "++ Transfering container to lavis directories"
 
-rsync --progress --checksum --append-verify  --verbose --force /misc/purcell/alfonso/tmp/container/afni.sif \ 
+rsync --progress --verbose --force /misc/purcell/alfonso/tmp/container/afni.sif \
  afajardo@ada.lavis.unam.mx:/mnt/MD1200B/egarza/afajardo/containers/tmp
 
 else 
