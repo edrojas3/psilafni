@@ -22,6 +22,6 @@
   - navigate to the utils folder: ```cd utils```
 
   - Use the recipe to build the container: ```sudo singularity build -F afni.sif build_afni_singularity_container |& tee singularity_build_afni.logs```
-  - keep the container up to date with: ```sudo singularity build -F afni.sif update_afni_singularity_container.def |& tee update afni_logs```
+  - keep the container up to date. You can adapt the `utils/update_afni_container.sh`  to set your set your specific paths properly. 
 
 **Note:** you must have root privileges unless you call singularity build with the `--fake-root` or `--remote` flags.
