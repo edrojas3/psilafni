@@ -34,12 +34,12 @@ echo
 echo
 
 
-# build a sandbox container from the previous one 
+# build a sandbox container from the previous one
 
 echo "creating temporary sandbox to edit the container "
 
 singularity build --sandbox  -F /misc/purcell/alfonso/tmp/container/tmp/afni \
- /misc/purcell/alfonso/tmp/container/afni.sif 
+ /misc/purcell/alfonso/tmp/container/afni.sif
 
 
 # update afni binaries 
@@ -81,6 +81,7 @@ cd $basedir
 
 
 singularity cache clean --force 
+
 singularity build -F /misc/purcell/alfonso/tmp/container/tmp/afni.sif \
  /misc/purcell/alfonso/tmp/container/tmp/afni
 
@@ -104,14 +105,14 @@ fi
 
 if [  -f /misc/purcell/alfonso/tmp/container/tmp/afni.sif ]
 then
-cp  /misc/purcell/alfonso/tmp/container/tmp/afni.sif /misc/purcell/alfonso/tmp/container/afni.sif
+mv  /misc/purcell/alfonso/tmp/container/tmp/afni.sif /misc/purcell/alfonso/tmp/container/afni.sif
 
 echo
 echo
 echo "++ Transfering container to lavis directories"
 
 rsync --progress  --verbose --force /misc/purcell/alfonso/tmp/container/afni.sif \
- afajardo@ada.lavis.unam.mx:/mnt/MD1200B/egarza/afajardo/containers/tmp
+ afajardo@ada.lavis.unam.mx:/mnt/MD1200B/egarza/afajardo/containers/
 
 else 
 echo
