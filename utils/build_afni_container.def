@@ -40,8 +40,8 @@ add-apt-repository -y "ppa:marutter/rrutter4.0"
 add-apt-repository -y "ppa:c2d4u.team/c2d4u4.0+"
 
   apt-get -y update && \
-  apt-get install -y  nano bc tcsh xfonts-base libssl-dev \
-                        python-is-python3 python3-pip     \
+  apt-get install -y    nano  tcsh xfonts-base libssl-dev \
+                        python-is-python3 python3-pip bc     \
                         python3-matplotlib python3-numpy  \
                         python3-scipy python3-pillow      \
                         gsl-bin netpbm gnome-tweak-tool   \
@@ -57,7 +57,7 @@ add-apt-repository -y "ppa:c2d4u.team/c2d4u4.0+"
                         r-base-dev cmake libgsl-dev       \
                         libgdal-dev libopenblas-dev       \
                         libnode-dev libudunits2-dev       \
-                        libgfortran4 ffmpeg
+                        libgfortran4 ffmpeg wget
 
  #---------- create symbolic link for dependencies ----------------------------
 %post
