@@ -34,6 +34,7 @@ apt install -y r-base
 
   # ----------------- Software dependencies------------------------------------
 
+%post
 add-apt-repository -y universe
 add-apt-repository -y "ppa:marutter/rrutter4.0"
 add-apt-repository -y "ppa:c2d4u.team/c2d4u4.0+"
@@ -56,7 +57,7 @@ add-apt-repository -y "ppa:c2d4u.team/c2d4u4.0+"
                         r-base-dev cmake libgsl-dev       \
                         libgdal-dev libopenblas-dev       \
                         libnode-dev libudunits2-dev       \
-                        libgfortran4
+                        libgfortran4 ffmpeg
 
  #---------- create symbolic link for dependencies ----------------------------
 %post
@@ -88,7 +89,7 @@ ln -s /usr/lib/x86_64-linux-gnu/libgsl.so.23 /usr/lib/x86_64-linux-gnu/libgsl.so
 Rscript -e "install.packages(c('Rcpp','brms'), dependencies = TRUE, \
 INSTALL_opts = '--no-lock')"
 
-  Rscript -e "install.packages(c('afex','phia','snow','afex','paran','corrplot',\
+Rscript -e "install.packages(c('afex','phia','snow','afex','paran','corrplot',\
   'metafor', 'shiny', 'circos','nlme','lmerTest'))"
 
 
@@ -126,6 +127,7 @@ wget https://github.com/edrojas3/psilafni/raw/main/utils/MNI152_T1_2mm_brain.nii
 wget https://github.com/edrojas3/psilafni/raw/main/utils/MNI152_T1_2mm_template1.0_SSW.nii.gz
 wget https://github.com/edrojas3/psilafni/raw/main/utils/MNI152_T1_2mm_ventricle_mask.nii.gz
 wget https://github.com/edrojas3/psilafni/raw/main/utils/NMT_v2.0_sym_05mm_template1.0_SSW.nii.gz
+wget https://github.com/edrojas3/psilafni/raw/main/utils/MNI152_T1_2mm_brainmask.nii.gz
 
 cd /AFNI
 # -----------------------fix issue with matplotlib in python-------------------
