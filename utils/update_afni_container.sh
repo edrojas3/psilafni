@@ -36,8 +36,8 @@ echo
 
 # build a sandbox container from the previous one
 
-echo "creating temporary sandbox to edit the container "
-
+echo "++Creating temporary sandbox to edit the container.."
+echo
 singularity build --sandbox  -F /misc/purcell/alfonso/tmp/container/tmp/afni \
  /misc/purcell/alfonso/tmp/container/afni.sif
 
@@ -61,16 +61,11 @@ tcsh ./AFNI/abin/@Install_NMT -install_dir ./AFNI -overwrite -sym asym
 
 find ./AFNI -name "NMT*.nii.gz" -exec cp -v {} ./AFNI/abin \;
 
+
+
 # update MNI atlas in the abin folder 
  
-cd ./AFNI/abin
-
-wget https://github.com/edrojas3/psilafni/raw/main/utils/MNI152_T1_2mm.nii.gz
-wget https://github.com/edrojas3/psilafni/raw/main/utils/MNI152_T1_2mm_brain.nii.gz
-wget https://github.com/edrojas3/psilafni/raw/main/utils/MNI152_T1_2mm_template1.0_SSW.nii.gz
-wget https://github.com/edrojas3/psilafni/raw/main/utils/MNI152_T1_2mm_ventricle_mask.nii.gz
-wget https://github.com/edrojas3/psilafni/raw/main/utils/NMT_v2.0_sym_05mm_template1.0_SSW.nii.gz
-
+cp /misc/purcell/alfonso/tmp/github/psilafni/utils/*.nii.gz /AFNI/abin
 
 cd $basedir
 
