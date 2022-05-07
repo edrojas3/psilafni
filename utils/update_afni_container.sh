@@ -65,7 +65,7 @@ find ./AFNI -name "NMT*.nii.gz" -exec cp -v {} ./AFNI/abin \;
 
 # update MNI atlas in the abin folder 
  
-cp /misc/purcell/alfonso/tmp/github/psilafni/utils/*.nii.gz /AFNI/abin
+cp /misc/purcell/alfonso/tmp/github/psilafni/utils/*.nii.gz /misc/purcell/alfonso/tmp/container/tmp/afni/AFNI/abin
 
 cd $basedir
 
@@ -106,8 +106,8 @@ echo
 echo
 echo "++ Transfering container to lavis directories"
 
-rsync --progress  --verbose --force /misc/purcell/alfonso/tmp/container/afni.sif \
- afajardo@ada.lavis.unam.mx:/mnt/MD1200B/egarza/afajardo/containers/
+#rsync --progress  --verbose --force /misc/purcell/alfonso/tmp/container/afni.sif \
+# afajardo@ada.lavis.unam.mx:/mnt/MD1200B/egarza/afajardo/containers/
 
 else 
 echo
