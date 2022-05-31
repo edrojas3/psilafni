@@ -1,21 +1,58 @@
 #!/bin/tcsh -xef
 
-
 # -------------------------------------------------------
 # Script for testing align_epi_anat.py parameters for site-ucdavis
-# - test cost_functions: lpc lpc+ZZ mi nmi 
-# - nmi has been the best cost function so far
-# - blip reverse is not needed for testing. Even adding it to afni_proc.py, all alignment is done with the forward dset
+# - this is just a starting point, add or remove things as you see fit
+# - suggested steps:
+#		1. copy this script and add the subject-id as suffix
+#			- ex. cp align_epi2anat align_epi2anat_sub-032125.tcsh	
+#		1. run the script without modifications
+#			- add the subject and output directory first
+#		2. from the output jpgs select those cost functions that did a better job
+#		3. if there were huge transformations (scaling, rotation, etc.) add options to the "Allineate-opts". My suggestion is to add them sequantially  
+#			a. add -smallrange to set smaller parameter ranges
+#			b. restrain the non-rigid-body transformations with "-maxscl", or "-maxshr"
+#				- ex: -maxscl 1.01 -maxshr 0.01 
+#				- one might think that the -rigid_body option is useful in this situations but not really... or maybe I don't know how to use it
+#	    	c. if necessary, restrain the rigid-body transformations: -maxrot -maxshf
+#				- usually -maxshf is the weird one
+#			d. add -onepass, it sometimes helps
+#	    4. if non of the above work, then go and get a beer to let your creativity flow
+#
+# Additional notes:
+# - the script does some preprocessing first (tshift, dspike), this is because the output will be identical to the volume that afni_proc.py will use for the whole preprocessing: vr_base_min_outlier+orig. Skip this steps by adding a base image in the "Input argument section". The base image can be the vr_base_min_outlier+orig you got from previous allignment tests.  
+# - by default the script doesn't align the centers of mass (-cmass nocmass). By experience, if you add cmass you're letting the brains do parkour and the registration ends up in crazy places or sometimes shapes  
+# - blip reverse is not needed for testing. Even afni_proc.py does all the alignment with the forward dset.
+# - this script tests all available cost functions:
+#		- crA 
+#		- crM 
+#		- crU 
+#		- hel
+#		- ls
+#		- lpa
+#		- lpa+ 
+#		- lpa+ZZ 
+#		- lpc 
+#		- lpc+ 
+#		- lpc+ZZ
+#		- mi 
+#		- sp 
+#		- je 
+#		- lss
+# - nmi has been the best cost function so far. It's snapshot jpg ends in *al.jpg
+# - Usually the "lpa", "lpc", and "cr" family are not great but they are included because why not.
+# 
+# 
 # -------------------------------------------------------
 
 # Input arguments
 
-set subj = sub-032127 # sub-id
-set vr_base = /misc/tezca/reduardo/data/site-ucdavis/align_tests/${subj}/${subj}_01/vr_base_min_outlier+orig.HEAD # add path to base func data if you have one 
+set subj =  # sub-id
+set vr_base = NA# add path to base func data if you have one 
 
 # assign source and output directory names
 set sourcedir = /misc/hahn2/alfonso/primates/monkeys/data/site-ucdavis
-set output_dir = /misc/tezca/reduardo/data/site-ucdavis/align_tests/${subj}/${subj}_04
+set output_dir = /misc/tezca/reduardo/data/site-ucdavis/align_tests/${subj}/${subj}
 set overwrite  = 0 # set to 1 if you want to overwrite output_dir if it exists
 
 
@@ -130,7 +167,7 @@ if ( $vr_base_exists == 0 ) then
 		# --------------------------------
 		# extract volreg registration base
 		3dbucket -prefix vr_base_min_outlier                           \
-		    pb02.$subj.r$minoutrun.tshift+orig"[$minouttr]"
+	    pb02.$subj.r$minoutrun.tshift+orig"[$minouttr]"
 		
 endif
 # ================================= align ==================================
@@ -145,9 +182,6 @@ align_epi_anat.py -anat2epi -anat ${subj}_anat_nsu+orig       \
 		-rigid_body                                           \
 		-cost nmi                                             \
 		-Allineate_opts -source_automask+2                    \
-				-smallrange                                   \
-				-maxscl 1.01                                  \
-				-maxshf 0.05                                  \
 		-multi_cost crA crM crU hel ls                        \
 		            lpa lpa+ lpa+ZZ lpc lpc+ lpc+ZZ           \
 		            mi sp je lss                              \

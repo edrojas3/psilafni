@@ -2,30 +2,38 @@
 
 
 # -------------------------------------------------------
-# Script for testing align_epi_anat.py parameters for site-ucdavis
-# - test cost_functions: lpc lpc+ZZ mi nmi 
+# Script for testing alignment in sub-032127
+# Cost functions
+#		- nmi
+#		- hel
+#		- mi 
+#		- sp 
+#		- je 
+#		- lss
 # - nmi has been the best cost function so far
-# - blip reverse is not needed for testing. Even adding it to afni_proc.py, all alignment is done with the forward dset
+# 
+# 
 # -------------------------------------------------------
-
-
 
 # Input arguments
 
 set subj = sub-032127 # sub-id
-set vr_base = NA # min_outlier epi volume for alignment
+set vr_base = /misc/tezca/reduardo/data/site-ucdavis/align_tests/${subj}/${subj}_01/vr_base_min_outlier+orig.HEAD # add path to base func data if you have one 
 
 # assign source and output directory names
 set sourcedir = /misc/hahn2/alfonso/primates/monkeys/data/site-ucdavis
-set output_dir = /misc/tezca/reduardo/data/site-ucdavis/align_tests/${subj}/${subj}_02
+set output_dir = /misc/tezca/reduardo/data/site-ucdavis/align_tests/${subj}/${subj}_05
+set overwrite  = 1 # set to 1 if you want to overwrite output_dir if it exists
 
 
 # set list of runs
 set runs = (`count -digits 2 1 1`)
 
-# source directory
 
 # create results and stimuli directories
+if ( $overwrite == 1 ) then
+		rm -r $output_dir
+endif
 mkdir -p $output_dir
 #mkdir $output_dir/stimuli
 
@@ -50,27 +58,28 @@ mkdir -p $output_dir
     $output_dir/${subj}_anat_shft_WARP.nii.gz
 
 set vr_base_exists = 0
-if ( -e $vr_base ) then
+if ( -f $vr_base ) then
 		3dcopy ${vr_base} \
 		$output_dir/vr_base_min_outlier+orig
 		set vr_base_exists = 1
 endif
 
-# ============================ auto block: tcat ============================
-# apply 3dTcat to copy input dsets to results dir,
-# while removing the first 2 TRs
-3dTcat -prefix $output_dir/pb00.${subj}.r01.tcat                   \
-    $sourcedir/${subj}/ses-001/func/${subj}_ses-001_task-resting_run-1_bold_unwarped.nii.gz'[2..$]'
-
-# and make note of repetitions (TRs) per run
-set tr_counts = ( 248 )
 
 # -------------------------------------------------------
 # enter the results directory (can begin processing data)
 cd $output_dir
 
-
 if ( $vr_base_exists == 0 ) then
+
+# ============================ auto block: tcat ============================
+		# apply 3dTcat to copy input dsets to results dir,
+		# while removing the first 2 TRs
+		3dTcat -prefix $output_dir/pb00.${subj}.r01.tcat                   \
+		    $sourcedir/${subj}/ses-001/func/${subj}_ses-001_task-resting_run-1_bold_unwarped.nii.gz'[2..$]'
+		
+		# and make note of repetitions (TRs) per run
+		set tr_counts = ( 248 )
+
 		# ---------------------------------------------------------
 		# data check: compute correlations with spherical ~averages
 		@radial_correlate -nfirst 0 -do_clean yes -rdir radcor.pb00.tcat \
@@ -128,7 +137,7 @@ if ( $vr_base_exists == 0 ) then
 		# --------------------------------
 		# extract volreg registration base
 		3dbucket -prefix vr_base_min_outlier                           \
-		    pb02.$subj.r$minoutrun.tshift+orig"[$minouttr]"
+	    pb02.$subj.r$minoutrun.tshift+orig"[$minouttr]"
 		
 endif
 # ================================= align ==================================
@@ -141,27 +150,33 @@ align_epi_anat.py -anat2epi -anat ${subj}_anat_nsu+orig       \
 		-anat_has_skull no                                    \
 		-cmass nocmass -feature_size 0.5	                  \
 		-rigid_body                                           \
-		-Allineate_opts                                       \
-		        -source_automask+2                            \
-				-parang 7 0.99 1.01                           \
-				-parang 8 0.99 1.01                            \
-				-parang 9 0.99 1.01                           \
-		-multi_cost ls lpa lpa+ lpc lpc+ lpc+ZZ mi nmi je hel \
-		-volreg off                                           \
-		-tshift off                                           \
-		-overwrite
+		-cost nmi                                             \
+		-Allineate_opts -source_automask+2                    \
+				-maxscl 1.01                                  \
+				-maxshr 0.01                                  \
+				-maxshf 1                                     \
+		-multi_cost crA crM crU hel ls                        \
+		            lpa lpa+ lpa+ZZ lpc lpc+ lpc+ZZ           \
+		            mi sp je lss                              \
+		-volreg off -tshift off                              
 		
 # ------------------------------------------------------
 # snapshots for quick visualization
 
+@snapshot_volreg vr_base_min_outlier+orig ${subj}_anat_nsu_al+orig
+@snapshot_volreg vr_base_min_outlier+orig ${subj}_anat_nsu_al_crA+orig
+@snapshot_volreg vr_base_min_outlier+orig ${subj}_anat_nsu_al_crM+orig
+@snapshot_volreg vr_base_min_outlier+orig ${subj}_anat_nsu_al_crU+orig
+@snapshot_volreg vr_base_min_outlier+orig ${subj}_anat_nsu_al_hel+orig
 @snapshot_volreg vr_base_min_outlier+orig ${subj}_anat_nsu_al_ls+orig
 @snapshot_volreg vr_base_min_outlier+orig ${subj}_anat_nsu_al_lpa+orig
 @snapshot_volreg vr_base_min_outlier+orig ${subj}_anat_nsu_al_lpa++orig
+@snapshot_volreg vr_base_min_outlier+orig ${subj}_anat_nsu_al_lpa+ZZ+orig
 @snapshot_volreg vr_base_min_outlier+orig ${subj}_anat_nsu_al_lpc+orig
 @snapshot_volreg vr_base_min_outlier+orig ${subj}_anat_nsu_al_lpc++orig
 @snapshot_volreg vr_base_min_outlier+orig ${subj}_anat_nsu_al_lpc+ZZ+orig
 @snapshot_volreg vr_base_min_outlier+orig ${subj}_anat_nsu_al_mi+orig
-@snapshot_volreg vr_base_min_outlier+orig ${subj}_anat_nsu_al_nmi+orig
+@snapshot_volreg vr_base_min_outlier+orig ${subj}_anat_nsu_al_sp+orig
 @snapshot_volreg vr_base_min_outlier+orig ${subj}_anat_nsu_al_je+orig
-@snapshot_volreg vr_base_min_outlier+orig ${subj}_anat_nsu_al_hel+orig
+@snapshot_volreg vr_base_min_outlier+orig ${subj}_anat_nsu_al_lss+orig
 @snapshot_volreg vr_base_min_outlier+orig ${subj}_anat_nsu+orig
