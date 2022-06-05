@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #Description: FOV is too big in some of the anatomicals, often cotaining tissue that hiders anatomical proprocesing.
-              This script calls 3dAUtobox function to reduce the FOV as much as possible to only contain the head. 
+ #             This script calls 3dAUtobox function to reduce the FOV as much as possible to only contain the head. 
 
 
 
