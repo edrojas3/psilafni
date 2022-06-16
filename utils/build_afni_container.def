@@ -61,7 +61,7 @@ add-apt-repository -y "ppa:c2d4u.team/c2d4u4.0+"
                         r-base-dev cmake libgsl-dev       \
                         libgdal-dev libopenblas-dev       \
                         libnode-dev libudunits2-dev       \
-                        libgfortran4 ffmpeg wget
+                        libgfortran4 ffmpeg wget python2
 
  #---------- create symbolic link for dependencies ----------------------------
 %post
@@ -94,7 +94,7 @@ Rscript -e "install.packages(c('Rcpp','brms'), dependencies = TRUE, \
 INSTALL_opts = '--no-lock')"
 
 Rscript -e "install.packages(c('afex','phia','snow','afex','paran','corrplot',\
-  'metafor', 'shiny', 'circos','nlme','lmerTest'))"
+  'metafor', 'shiny', 'circos','nlme','lmerTest','pysch'))"
 
 
 
