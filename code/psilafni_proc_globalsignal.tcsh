@@ -12,7 +12,7 @@
 
 # SET VARIABLES
 set sub	      = sub-032135
-set outdir    =  /mnt/MD1200B/egarza/afajardo/primeDE/site-ucdavis/data_ap/${sub}
+set outdir    =  /mnt/MD1200B/egarza/afajardo/primeDE/site-ucdavis/data_ap/${sub}_gs
 set cost_func = mi
 
 # IMPORTANT DIRECTORIES
