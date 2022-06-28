@@ -11,9 +11,9 @@
 # -------------------------------------------------
 
 # SET VARIABLES
-set sub	      = sub-032135
+set sub	      = sub-032137
 set outdir    =  /mnt/MD1200B/egarza/afajardo/primeDE/site-ucdavis/data_ap/${sub}_anaticor
-set cost_func = mi
+set cost_func = lpc+
 
 # IMPORTANT DIRECTORIES
 set site      = /mnt/MD1200B/egarza/afajardo/primeDE/site-ucdavis # location of dataset
