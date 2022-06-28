@@ -76,7 +76,7 @@ afni_proc.py \
 	    ${data_aw}/${sub}*_composite_linear_to_template.1D \
 	    ${data_aw}/${sub}*_shft_WARP.nii.gz \
 	-anat_follower_ROI WM_Mask epi  $WM_Mask \
-	-anat_follower_ROI _Mask epi $VENT_Mask \
+	-anat_follower_ROI VENT_Mask epi $VENT_Mask \
 	-anat_follower_erode WM_Mask VENT_Mask \
 	-mask_union WM_VENT WM_Mask VENT_Mask \
 	-mask_epi_anat yes \
