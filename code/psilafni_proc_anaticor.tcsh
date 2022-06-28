@@ -60,7 +60,7 @@ afni_proc.py \
 	-anat_uniform_method none \
 	-radial_correlate_blocks tcat volreg \
 	-radial_correlate_opts -sphere_rad 14 \
-	-tcat_remove_first_trs 2 \
+	-tcat_remove_first_trs 5 \
 	-volreg_align_to MIN_OUTLIER \
 	-volreg_align_e2a \
 	-volreg_tlrc_warp \
