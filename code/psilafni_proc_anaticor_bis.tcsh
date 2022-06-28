@@ -13,7 +13,7 @@
 
 # SET VARIABLES
 set sub	      = sub-032135
-set outdir    =  /mnt/MD1200B/egarza/afajardo/primeDE/site-ucdavis/data_ap/${sub}_anaticor
+set outdir    =  /mnt/MD1200B/egarza/afajardo/primeDE/site-ucdavis/data_ap/${sub}_anaticor_vent
 set cost_func = mi
 
 # IMPORTANT DIRECTORIES
