@@ -76,7 +76,7 @@ afni_proc.py \
 	-anat_follower_ROI WM_Mask epi  $WM_Mask \
 	-anat_follower_ROI CSF_Mask epi $CSF_Mask \
 	-anat_follower_erode WM_Mask CSF_Mask \
-	-mask_intersect WM_CSF WM_Mask CSF_Mask \
+	-mask_union WM_CSF WM_Mask CSF_Mask \
 	-mask_epi_anat yes \
 	-regress_motion_per_run \
 	-regress_apply_mot_types demean deriv \
