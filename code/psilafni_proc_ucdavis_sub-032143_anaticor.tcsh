@@ -58,7 +58,6 @@ afni_proc.py \
 	-copy_anat "${sub_anat}" \
 	-anat_has_skull no \
 	-anat_uniform_method none \
-	-align_unifize_epi local   \
 	-radial_correlate_blocks tcat volreg \
 	-radial_correlate_opts -sphere_rad 14 \
 	-tcat_remove_first_trs 5 \
