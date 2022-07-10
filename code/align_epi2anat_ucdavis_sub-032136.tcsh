@@ -12,12 +12,12 @@
 
 # Input arguments
 
-set subj = sub-032136# sub-id
+set subj =  # sub-id
 set vr_base = NA
 
 # assign source and output directory names
-set sourcedir = /misc/hahn2/alfonso/primates/monkeys/data/site-ucdavis
-set output_dir = /misc/tezca/reduardo/data/site-ucdavis/align_tests_Allineate-opts/${subj}_02
+set sourcedir = /mnt/MD1200B/egarza/afajardo/primeDE/site-ucdavis
+set output_dir = /mnt/MD1200B/egarza/afajardo/primeDE/site-ucdavis/align_test
 
 
 # set list of runs
