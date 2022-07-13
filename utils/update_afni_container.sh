@@ -13,6 +13,11 @@ export SINGULARITY_CACHEDIR=/misc/tezca/alfonso/tmp/containers/tmp
 
 singularity cache clean --force
 
+autenticate with singularity credentials
+
+singularity remote login --tokenfile /misc/tezca/alfonso/tmp/containers/sylabs.token
+
+
 # build de container
 
 echo
@@ -22,6 +27,8 @@ echo "++ Updating container... This may take a while but no as much as creating 
 echo 
 
 echo
+
+
 
 
 # build a sandbox container from the previous one
