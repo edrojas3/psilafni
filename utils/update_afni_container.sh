@@ -13,7 +13,8 @@ export SINGULARITY_CACHEDIR=/misc/tezca/alfonso/tmp/containers/tmp
 
 singularity cache clean --force
 
-autenticate with singularity credentials
+#autenticate with singularity credentials
+echo
 
 singularity remote login --tokenfile /misc/tezca/alfonso/tmp/containers/sylabs.token
 
