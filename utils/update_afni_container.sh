@@ -3,8 +3,8 @@
 
 basedir=$PWD
  
-export SINGULARITY_TMPDIR=/misc/purcell/alfonso/tmp/container/tmp
-export SINGULARITY_CACHEDIR=/misc/purcell/alfonso/tmp/container/tmp
+export SINGULARITY_TMPDIR=/misc/tezca/alfonso/tmp/containers/tmp
+export SINGULARITY_CACHEDIR=/misc/tezca/alfonso/tmp/containers/tmp
 
 
 
@@ -12,16 +12,6 @@ export SINGULARITY_CACHEDIR=/misc/purcell/alfonso/tmp/container/tmp
 # clean singularity cache
 
 singularity cache clean --force
-
-
-
-
-# login in with singularity remote login 
-
-singularity remote login --tokenfile \
- /misc/purcell/alfonso/tmp/container/sylabs-token
-
-
 
 # build de container
 
@@ -38,17 +28,17 @@ echo
 
 echo "++ Creating temporary sandbox to edit the container..."
 echo
-singularity build --sandbox  -F /misc/purcell/alfonso/tmp/container/tmp/afni \
- /misc/purcell/alfonso/tmp/container/afni.sif
+singularity build --sandbox  -F /misc/tezca/alfonso/tmp/containers/tmp/afni \
+ /misc/tezca/alfonso/tmp/containers/afni.sif
 
 
 # update afni binaries 
 
-if [ -d /misc/purcell/alfonso/tmp/container/tmp/afni ]
+if [ -d /misc/tezca/alfonso/tmp/containers/tmp/afni ]
 then
 
 echo "++ Updating AFNI"
-cd /misc/purcell/alfonso/tmp/container/tmp/afni
+cd /misc/tezca/alfonso/tmp/containers/tmp/afni
 
 tcsh ./AFNI/abin/@update.afni.binaries -do_extras -package linux_ubuntu_16_64 \
  -bindir ./AFNI/abin -make_backup no
@@ -65,7 +55,7 @@ find ./AFNI -name "NMT*.nii.gz" -exec cp -v {} ./AFNI/abin \;
 
 # update MNI atlas in the abin folder 
  
-cp /misc/purcell/alfonso/tmp/github/psilafni/utils/*.nii.gz /misc/purcell/alfonso/tmp/container/tmp/afni/AFNI/abin
+cp /misc/tezca/alfonso/tmp/repos/psilafni/utils/*.nii.gz /misc/tezca/alfonso/tmp/containers/tmp/afni/AFNI/abin
 
 cd $basedir
 
@@ -77,11 +67,11 @@ cd $basedir
 
 singularity cache clean --force 
 
-singularity build -F /misc/purcell/alfonso/tmp/container/tmp/afni.sif \
- /misc/purcell/alfonso/tmp/container/tmp/afni
+singularity build -F /misc/tezca/alfonso/tmp/containers/tmp/afni.sif \
+ /misc/tezca/alfonso/tmp/containers/tmp/afni
 
 
-rm -rf  /misc/purcell/alfonso/tmp/container/tmp/afni
+rm -rf  /misc/tezca/alfonso/tmp/containers/tmp/afni
 
 
 else
@@ -98,15 +88,15 @@ fi
 
 
 
-if [  -f /misc/purcell/alfonso/tmp/container/tmp/afni.sif ]
+if [  -f /misc/tezca/alfonso/tmp/containers/tmp/afni.sif ]
 then
-mv  /misc/purcell/alfonso/tmp/container/tmp/afni.sif /misc/purcell/alfonso/tmp/container/afni.sif
+mv  /misc/tezca/alfonso/tmp/containers/tmp/afni.sif /misc/tezca/alfonso/tmp/containers/afni.sif
 
 echo
 echo
 echo "++ Transfering container to lavis directories"
 
-rsync --progress  --verbose --force /misc/purcell/alfonso/tmp/container/afni.sif \
+rsync --progress  --verbose --force /misc/tezca/alfonso/tmp/containers/afni.sif \
  afajardo@ada.lavis.unam.mx:/mnt/MD1200B/egarza/afajardo/containers/
 
 else 
