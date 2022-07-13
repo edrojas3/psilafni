@@ -78,7 +78,7 @@ else
 
 echo
 echo 
-echo "+ +Failure to create container. Program exits now!!!! "
+echo "++ Failure to create container. Program exits now!!!! "
 echo 
 exit 
 
@@ -102,7 +102,7 @@ rsync --progress  --verbose --force /misc/tezca/alfonso/tmp/containers/afni.sif 
 else 
 echo
 echo 
-echo "++Failure to create container. Program exits now!!!! "
+echo "++ Failure to create and/or transfer container. Program exits now!!!! "
 echo 
 exit 
 
