@@ -1,3 +1,4 @@
 *.sif
 *logs
 afni_sandbox
+tmp*
