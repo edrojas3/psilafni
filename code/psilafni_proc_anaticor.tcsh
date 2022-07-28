@@ -80,7 +80,7 @@ afni_proc.py \
 	-anat_follower_ROI CSF_Mask epi $CSF_Mask \
 	-anat_follower_ROI VENT_Mask epi $VENT_Mask \
 	-anat_follower_erode WM_Mask CSF_Mask VENT_Mask \
-	-mask_intersect SVENT_Mask CSF_Mask VENT_Mask \
+	-mask_union SVENT_Mask CSF_Mask VENT_Mask \
 	-mask_union WM_VENT WM_Mask SVENT_Mask \
 	-mask_epi_anat yes \
 	-regress_anaticor_fast \
