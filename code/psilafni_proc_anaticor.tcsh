@@ -79,19 +79,18 @@ afni_proc.py \
 	-anat_follower_ROI WM_Mask epi  $WM_Mask \
 	-anat_follower_ROI CSF_Mask epi $CSF_Mask \
 	-anat_follower_ROI VENT_Mask epi $VENT_Mask \
-	-anat_follower_erode WM_Mask CSF_Mask VENT_Mask \
-	-mask_union SVENT_Mask CSF_Mask VENT_Mask \
-	-mask_union WM_VENT WM_Mask SVENT_Mask \
+	-anat_follower_erode WM_Mask VENT_Mask CSF_Mask \
+	-mask_union SVENT_Mask CSF_Mask VENT_Mask 		\
+	-mask_union ANATICOR_Mask SVENT_Mask WM_Mask \
 	-mask_epi_anat yes \
 	-regress_anaticor_fast \
-	-regress_anaticor_label WM_VENT \
+	-regress_anaticor_label ANATICOR_Mask \
 	-regress_motion_per_run \
 	-regress_apply_mot_types demean deriv \
 	-regress_censor_motion 0.30 \
 	-regress_censor_outliers 0.05 \
 	-regress_ROI_PC WM_Mask 3 \
 	-regress_ROI_PC SVENT_Mask 3 \
-	-regress_ROI_PC_per_run WM_Mask SVENT_Mask \
 	-regress_est_blur_errts \
 	-regress_est_blur_epits \
 	-regress_run_clustsim no \
