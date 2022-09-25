@@ -25,3 +25,7 @@
   - keep the container up to date. You can adapt the `utils/update_afni_container.sh`  to set your set your specific paths properly. 
 
 **Note:** you must have root privileges unless you call singularity build with the `--fake-root` or `--remote` flags.
+
+Code  folder scripts: 
+
+1.
