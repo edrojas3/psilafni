@@ -12,7 +12,7 @@
 # -------------------------------------------------
 
 # SET VARIABLES
-set subj      = sub-032133 
+set subj      = sub-032136 
 
 # IMPORTANT DIRECTORIES
 
@@ -25,7 +25,7 @@ set subj      = sub-032133
 ## Niagara
 set site      = /misc/m/mchakrav/afajardo/PRIME-DE/data/site-ucdavis # location of dataset
 set data_aw   = $site/data_aw/$subj # @animal_warper output directory
-set outdir    = $site/${subj}_test
+set outdir    = $site/data_ap/${subj}
 set refdir    = /misc/m/mchakrav/afajardo/atlases_and_templates/NMT_v2.0_sym/NMT_v2.0_sym_05mm # location of standard template
 
 # INPUT DATA

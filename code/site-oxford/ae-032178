@@ -1,0 +1,1518 @@
+The following modules were not unloaded:
+  (Use "module --force purge" to unload all):
+
+  1) NiaEnv/2019b
+
+Modules based on Lua: Version 8.6.16  2022-03-22 14:19 -05:00
+    by Robert McLay mclay@tacc.utexas.edu
+
+module [options] sub-command [args ...]
+
+Help sub-commands:
+------------------
+  help                              prints this message
+  help                module [...]  print help message from module(s)
+
+Loading/Unloading sub-commands:
+-------------------------------
+  load | add          module [...]  load module(s)
+  try-load | try-add  module [...]  Add module(s), do not complain if not
+                                    found
+  del | unload        module [...]  Remove module(s), do not complain if not
+                                    found
+  swap | sw | switch  m1 m2         unload m1 and load m2
+  purge                             unload all modules
+  refresh                           reload aliases from current list of
+                                    modules.
+  update                            reload all currently loaded modules.
+
+Listing / Searching sub-commands:
+---------------------------------
+  list                              List loaded modules
+  list                s1 s2 ...     List loaded modules that match the
+                                    pattern
+  avail | av                        List available modules
+  avail | av          string        List available modules that contain
+                                    "string".
+  overview | ov                     List all available modules by short
+                                    names with number of versions
+  overview | ov       string        List available modules by short names
+                                    with number of versions that contain
+                                    "string"
+  spider                            List all possible modules
+  spider              module        List all possible version of that module
+                                    file
+  spider              string        List all module that contain the
+                                    "string".
+  spider              name/version  Detailed information about that version
+                                    of the module.
+  whatis              module        Print whatis information about module
+  keyword | key       string        Search all name and whatis that contain
+                                    "string".
+
+Searching with Lmod:
+--------------------
+  All searching (spider, list, avail, keyword) support regular expressions:
+  
+
+  -r spider           '^p'          Finds all the modules that start with
+                                    `p' or `P'
+  -r spider           mpi           Finds all modules that have "mpi" in
+                                    their name.
+  -r spider           'mpi$         Finds all modules that end with "mpi" in
+                                    their name.
+
+Handling a collection of modules:
+--------------------------------
+  save | s                          Save the current list of modules to a
+                                    user defined "default" collection.
+  save | s            name          Save the current list of modules to
+                                    "name" collection.
+  reset                             The same as "restore system"
+  restore | r                       Restore modules from the user's
+                                    "default" or system default.
+  restore | r         name          Restore modules from "name" collection.
+  restore             system        Restore module state to system defaults.
+  savelist                          List of saved collections.
+  describe | mcc      name          Describe the contents of a module
+                                    collection.
+  disable             name          Disable (i.e. remove) a collection.
+
+Deprecated commands:
+--------------------
+  getdefault          [name]        load name collection of modules or
+                                    user's "default" if no name given.
+                                    ===> Use "restore" instead <====
+  setdefault          [name]        Save current list of modules to name if
+                                    given, otherwise save as the default
+                                    list for you the user.
+                                    ===> Use "save" instead. <====
+
+Miscellaneous sub-commands:
+---------------------------
+  is-loaded           modulefile    return a true status if module is loaded
+  is-avail            modulefile    return a true status if module can be
+                                    loaded
+  show                modulefile    show the commands in the module file.
+  use [-a]            path          Prepend or Append path to MODULEPATH.
+  unuse               path          remove path from MODULEPATH.
+  tablelist                         output list of active modules as a lua
+                                    table.
+
+Important Environment Variables:
+--------------------------------
+  LMOD_COLORIZE                     If defined to be "YES" then Lmod prints
+                                    properties and warning in color.
+
+    --------------------------------------------------------------------------
+
+Lmod Web Sites
+
+  Documentation:    http://lmod.readthedocs.org
+  GitHub:           https://github.com/TACC/Lmod
+  SourceForge:      https://lmod.sf.net
+  TACC Homepage:    https://www.tacc.utexas.edu/research-development/tacc-projects/lmod
+
+  To report a bug please read http://lmod.readthedocs.io/en/latest/075_bug_reporting.html
+    --------------------------------------------------------------------------
+
+
+/var/spool/slurm/slurmd/job8259823/slurm_script: line 12: [: missing `]'
+set subj = sub-032178
+set align_centers = 1
+set unifize = 1
+set overwrite = 1
+set sourcedir = /misc/m/mchakrav/afajardo/PRIME-DE/data/site-oxford
+set output_dir = /misc/m/mchakrav/afajardo/PRIME-DE/data/site-oxford/align_tests/sub-032178
+set runs = ( `count -digits 2 1 1` )
+count -digits 2 1 1
+if ( 1 == 1 ) then
+if ( -d /misc/m/mchakrav/afajardo/PRIME-DE/data/site-oxford/align_tests/sub-032178 ) then
+rm -r /misc/m/mchakrav/afajardo/PRIME-DE/data/site-oxford/align_tests/sub-032178
+endif
+endif
+mkdir -p /misc/m/mchakrav/afajardo/PRIME-DE/data/site-oxford/align_tests/sub-032178
+3dcopy /misc/m/mchakrav/afajardo/PRIME-DE/data/site-oxford/data_aw/sub-032178/sub-032178_anat.nii.gz /misc/m/mchakrav/afajardo/PRIME-DE/data/site-oxford/align_tests/sub-032178/sub-032178_anat
+++ 3dcopy: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+3dcopy /misc/m/mchakrav/afajardo/PRIME-DE/data/site-oxford/data_aw/sub-032178/sub-032178_anat_nsu.nii.gz /misc/m/mchakrav/afajardo/PRIME-DE/data/site-oxford/align_tests/sub-032178/sub-032178_anat_nsu
+++ 3dcopy: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+3dcopy /misc/m/mchakrav/afajardo/PRIME-DE/data/site-oxford/data_aw/sub-032178/sub-032178_anat_warp2std_nsu.nii.gz /misc/m/mchakrav/afajardo/PRIME-DE/data/site-oxford/align_tests/sub-032178/sub-032178_anat_warp2std_nsu
+++ 3dcopy: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+3dcopy /misc/m/mchakrav/afajardo/PRIME-DE/data/site-oxford/data_aw/sub-032178/sub-032178_anat_composite_linear_to_template.1D /misc/m/mchakrav/afajardo/PRIME-DE/data/site-oxford/align_tests/sub-032178/sub-032178_anat_composite_linear_to_template.1D
+++ 3dcopy: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+3dcopy /misc/m/mchakrav/afajardo/PRIME-DE/data/site-oxford/data_aw/sub-032178/sub-032178_anat_shft_WARP.nii.gz /misc/m/mchakrav/afajardo/PRIME-DE/data/site-oxford/align_tests/sub-032178/sub-032178_anat_shft_WARP.nii.gz
+++ 3dcopy: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+cd /misc/m/mchakrav/afajardo/PRIME-DE/data/site-oxford/align_tests/sub-032178
+if ( 1 == 1 ) then
+3dTcat -prefix /misc/m/mchakrav/afajardo/PRIME-DE/data/site-oxford/align_tests/sub-032178/pb00.sub-032178.r01.tcat /misc/m/mchakrav/afajardo/PRIME-DE/data/site-oxford/sub-032178/ses-001/func/sub-032178_ses-001_task-resting_run-1_bold_ac+orig[0..1599(2)]
+++ 3dTcat: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ elapsed time = 0.9 s
+else
+set tr_counts = ( 800 )
+@radial_correlate -nfirst 0 -do_clean yes -rdir radcor.pb00.tcat -sphere_rad 14 pb00.sub-032178.r01.tcat+orig.HEAD
+++ 3dTcat: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ elapsed time = 0.5 s
+++ 3dAutomask: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Emperor Zhark
+-- detrend -polort 2, new eset = det.r01
+++ 3dTproject: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Cox the Algebraic (Linear)
+++ Setting up regressors
+++ 1 Blocks * 3 polynomials -- 3 polort regressors
+++ 800 retained time points MINUS 3 regressors ==> 797 D.O.F. left
+++ no -mask option ==> processing all 147456 voxels in dataset
+[7m*+ WARNING:[0m 3dTproject input data :: 2315 vectors are constant
+
+-- running correlation on dataset pb00.sub-032178.r01.tcat+orig.HEAD ...
+
+++ merge blur: rad 14, FWHM 28
+++ 3dmerge: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ default -1dindex = 0
+++ default -1tindex = 1
+Program 3dmerge 
+3dmerge: edit and combine 3D datasets, by RW Cox
+++ editing input dataset in memory (450.0 MB)
+................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+-- Wrote edited dataset: ./sphere.mean.14.r01+orig.BRIK
+
+++ 3dTcorrelate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Wrote dataset: ./radcor.14.r01.corr+orig.BRIK
+++ 3dbucket: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+---- done
+
+++ have do_clean, cleaning up...
+
+touch out.pre_ss_warn.txt
+foreach run ( 01 )
+3dToutcount -automask -fraction -polort 3 -legendre pb00.sub-032178.r01.tcat+orig
+++ 3dToutcount: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ 15674 voxels passed mask/clip
+1deval -a outcount.r01.1D -expr 1-step(a-0.05)
+if ( `1deval -a outcount.r$run.1D"{0}" -expr "step(a-0.4)"` ) then
+1deval -a outcount.r01.1D{0} -expr step(a-0.4)
+end
+cat outcount.r01.1D
+cat rm.out.cen.r01.1D
+set minindex = `3dTstat -argmin -prefix - outcount_rall.1D\'`
+3dTstat -argmin -prefix - outcount_rall.1D'
+++ 3dTstat: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: KR Hammett & RW Cox
+[7m*+ WARNING:[0m Input dataset is not 3D+time; assuming TR=1.0
+set ovals = ( `1d_tool.py -set_run_lengths $tr_counts                       
+                          -index_to_run_tr $minindex` )
+1d_tool.py -set_run_lengths 800 -index_to_run_tr 232
+set minoutrun = 01
+set minouttr = 232
+echo min outlier: run 01, TR 232
+tee out.min_outlier.txt
+min outlier: run 01, TR 232
+foreach run ( 01 )
+3dDespike -NEW -nomask -prefix pb01.sub-032178.r01.despike pb00.sub-032178.r01.tcat+orig
+++ 3dDespike: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: RW Cox
+++ Input dataset is in short format, but output will be in float format
+++ ignoring first 0 time points, using last 800
+++ using 800 time points => -corder 27
+++ Loading dataset pb00.sub-032178.r01.tcat+orig
+++ processing all 147456 voxels in dataset
+++ Procesing time series with NEW model fit algorithm
+++ smash edit thresholds: 3.1 .. 5.0 MADs
+ +   [ 3.457% .. 0.072% of normal distribution]
+ +   [ 8.839% .. 3.125% of Laplace distribution]
+++ start OpenMP thread #1
+++ start OpenMP thread #4
+++ start OpenMP thread #11
+++ start OpenMP thread #14
+++ start OpenMP thread #9
+++ start OpenMP thread #10
+++ start OpenMP thread #0
+++ start OpenMP thread #2
+++ start OpenMP thread #13
+++ start OpenMP thread #6
+++ start OpenMP thread #7
+++ start OpenMP thread #3
+++ start OpenMP thread #12
+++ start OpenMP thread #5
+++ start OpenMP thread #8
+...............................................................
+++ Elapsed despike time =  2s 289ms
+
+++ FINAL: 116121600 data points, 3577281 edits [3.081%], 192266 big edits [0.166%]
+++ Output dataset ./pb01.sub-032178.r01.despike+orig.BRIK
+end
+foreach run ( 01 )
+3dTshift -tzero 0 -quintic -prefix pb02.sub-032178.r01.tshift pb01.sub-032178.r01.despike+orig
+++ 3dTshift: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+[7m*+ WARNING:[0m dataset is already aligned in time!
+[7m*+ WARNING:[0m ==>> output dataset is just a copy of input dataset
+end
+3dbucket -prefix vr_base_min_outlier pb02.sub-032178.r01.tshift+orig[232]
+++ 3dbucket: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+set base_min = vr_base_min_outlier+orig
+if ( 1 != 0 ) then
+3dLocalUnifize -input vr_base_min_outlier+orig -prefix vr_base_min_outlier_unif
+++ Start 3dLocalUnifize work
+++ Making working directory: ./__wdir_LocalUni_lQ5kIDFSaks
+++ 3dTcat: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ elapsed time = 0.1 s
+++ 3dLocalstat: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Emperor Zhark
+++ Number of voxels in automask = 15633
+++ Neighborhood comprises 123 voxels
+++ Start sub-brick [0]
+++ Output dataset ./dset_01_lu.nii.gz
+++ 3dcalc: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: A cast of thousands
+++ Output dataset ./dset_02_rat.nii.gz
+++ Apply filter threshold to scaled image: 1.5
+++ 3dcalc: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: A cast of thousands
+++ Output dataset ./dset_03_filt.nii.gz
+++ 3dcopy: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+
++* Removing the working dir: '__wdir_LocalUni_lQ5kIDFSaks'
+
+
+++ DONE! View the finished, locally-unifized product:
+     /misc/m/mchakrav/afajardo/PRIME-DE/data/site-oxford/align_tests/sub-032178/vr_base_min_outlier_unif
+
+set base_min = vr_base_min_outlier_unif+orig
+endif
+align_epi_anat.py -anat2epi -anat sub-032178_anat_nsu+orig -suffix _al -epi vr_base_min_outlier_unif+orig -epi_base 0 -epi_strip 3dAutomask -anat_has_skull no -cmass cmass -feature_size 0.5 -cost nmi -Allineate_opts -source_automask+2 -multi_cost ls lpc lpc+ lpc+ZZ mi sp crA crM crU hel lpa lpa+ lpa+ZZ je lss -volreg off -tshift off
+#++ align_epi_anat version: 1.62
+#++ turning off volume registration
+#Script is running (command trimmed):
+  3dAttribute DELTA ./vr_base_min_outlier_unif+orig
+#Script is running (command trimmed):
+  3dAttribute DELTA ./vr_base_min_outlier_unif+orig
+#Script is running (command trimmed):
+  3dAttribute DELTA ./sub-032178_anat_nsu+orig
+#++ Multi-cost is ls
+#++ Multi-cost is lpc
+#++ Multi-cost is lpc+
+#++ Multi-cost is lpc+ZZ
+#++ Multi-cost is mi
+#++ Multi-cost is sp
+#++ Multi-cost is crA
+#++ Multi-cost is crM
+#++ Multi-cost is crU
+#++ Multi-cost is hel
+#++ Multi-cost is lpa
+#++ Multi-cost is lpa+
+#++ Multi-cost is lpa+ZZ
+#++ Multi-cost is je
+#++ Multi-cost is lss
+#++ Multi-cost is nmi
+#++ Removing all the temporary files
+#Script is running:
+  \rm -f ./__tt_vr_base_min_outlier_unif*
+#Script is running:
+  \rm -f ./__tt_sub-032178_anat_nsu*
+#Script is running (command trimmed):
+  3dcopy ./sub-032178_anat_nsu+orig ./__tt_sub-032178_anat_nsu+orig
+++ 3dcopy: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+#Script is running (command trimmed):
+  3dinfo ./__tt_sub-032178_anat_nsu+orig | \grep 'Data Axes Tilt:'|\grep 'Oblique'
+#++ Dataset /misc/m/mchakrav/afajardo/PRIME-DE/data/site-oxford/align_tests/sub-032178/__tt_sub-032178_anat_nsu+orig is not oblique
+#Script is running (command trimmed):
+  3dinfo ./vr_base_min_outlier_unif+orig | \grep 'Data Axes Tilt:'|\grep 'Oblique'
+#++ Dataset /misc/m/mchakrav/afajardo/PRIME-DE/data/site-oxford/align_tests/sub-032178/vr_base_min_outlier_unif+orig is not oblique
+#++ using 0th sub-brick because only one found
+#Script is running (command trimmed):
+  3dbucket -prefix ./__tt_vr_base_min_outlier_unif_ts ./vr_base_min_outlier_unif+orig'[0]'
+++ 3dbucket: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+#++ resampling epi to match anat data
+#Script is running (command trimmed):
+  3dresample -master ./__tt_sub-032178_anat_nsu+orig -prefix ./__tt_vr_base_min_outlier_unif_ts_rs -inset ./__tt_vr_base_min_outlier_unif_ts+orig'' -rmode Cu
+#++ removing skull or area outside brain
+#Script is running (command trimmed):
+  3dAutomask -apply_prefix ./__tt_vr_base_min_outlier_unif_ts_rs_ns ./__tt_vr_base_min_outlier_unif_ts_rs+orig
+++ 3dAutomask: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Emperor Zhark
+++ Loading dataset ./__tt_vr_base_min_outlier_unif_ts_rs+orig
+++ Forming automask
+ + Fixed clip level = 0.503370
+ + Used gradual clip level = 0.496209 .. 0.506315
+ + Number voxels above clip level = 934838
+ + Clustering voxels ...
+ + Largest cluster has 934838 voxels
+ + Clustering voxels ...
+ + Largest cluster has 934657 voxels
+ + Filled   666 voxels in small holes; now have 935323 voxels
+ + Filled 38058 voxels in large holes; now have 973381 voxels
+ + Clustering voxels ...
+ + Largest cluster has 973381 voxels
+ + Clustering non-brain voxels ...
+ + Clustering voxels ...
+ + Largest cluster has 7415227 voxels
+ + Mask now has 973381 voxels
+++ 973381 voxels in the mask [out of 8388608: 11.60%]
+++ first  47 x-planes are zero [from R]
+++ last   40 x-planes are zero [from L]
+++ first  40 y-planes are zero [from A]
+++ last   48 y-planes are zero [from P]
+++ first   0 z-planes are zero [from I]
+++ last   20 z-planes are zero [from S]
+++ applying mask to original data
+++ Writing masked data
+++ CPU time = 0.000000 sec
+#++ Computing weight mask
+#Script is running (command trimmed):
+  3dBrickStat -automask -percentile 90.000000 1 90.000000 ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig
+#++ Applying threshold of 1.181509 on /misc/m/mchakrav/afajardo/PRIME-DE/data/site-oxford/align_tests/sub-032178/__tt_vr_base_min_outlier_unif_ts_rs_ns+orig
+#Script is running (command trimmed):
+  3dcalc -datum float -prefix ./__tt_vr_base_min_outlier_unif_ts_rs_ns_wt -a ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig -expr 'min(1,(a/1.181509))'
+++ 3dcalc: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: A cast of thousands
+#++ Aligning anat data to epi data
+#Script is running (command trimmed):
+  3dAllineate -ls -wtprefix ./__tt_sub-032178_anat_nsu_al_ls_wtal -weight ./__tt_vr_base_min_outlier_unif_ts_rs_ns_wt+orig -source ./__tt_sub-032178_anat_nsu+orig -prefix ./sub-032178_anat_nsu_al_ls -base ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig -cmass -1Dmatrix_save ./sub-032178_anat_nsu_al_ls_mat.aff12.1D -master SOURCE -source_automask+2 -twoblur 1.000000 -blok "RHDD(0.500000)" -onepass 
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Option '-cmass' enables center-of-mass code = 7 = +xyz
+++ Source dataset: ./__tt_sub-032178_anat_nsu+orig.HEAD
+++ Base dataset:   ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig.HEAD
+++ Loading datasets into memory
+++ OpenMP thread count = 15
+++ ======= Allineation of 1 sub-bricks using Least Squares [Pearson Correlation] =======
+++ *** Fine pass begins ***
+ + Final fine fit Parameters:
+       x-shift= -0.6795   y-shift=  1.2913   z-shift= -8.9917  ...  enorm=  9.1093 mm
+       z-angle=  0.0230   x-angle=  2.9617   y-angle=  0.0368  ...  total=  2.9619 deg
+       x-scale=  1.0005   y-scale=  1.0502   z-scale=  1.1356  ...  vol3D=  1.1932=(1.0606)^3 [base smaller than source]
+     y/x-shear=  0.0012 z/x-shear=  0.0026 z/y-shear=  0.0058
+++ Wrote -1Dmatrix_save ./sub-032178_anat_nsu_al_ls_mat.aff12.1D
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 12.0
+++ ###########################################################
+++ #   PLEASE check results VISUALLY for alignment quality   #
+++ ###########################################################
+#++ Creating final output: anat data aligned to epi
+# copy is not necessary
+#++ Saving history
+#Script is running (command trimmed):
+  3dNotes -h "align_epi_anat.py -anat2epi -anat sub-032178_anat_nsu+orig \
+ -suffix _al -epi vr_base_min_outlier_unif+orig -epi_base 0 -epi_strip \
+ 3dAutomask -anat_has_skull no -cmass cmass -feature_size 0.5 -cost nmi \
+ -Allineate_opts -source_automask+2 -multi_cost ls lpc lpc+ lpc+ZZ mi sp \
+ crA crM crU hel lpa lpa+ lpa+ZZ je lss -volreg off -tshift off" \
+ ./sub-032178_anat_nsu_al_ls+orig
+
+#++ Aligning anat data to epi data
+#Script is running (command trimmed):
+  3dAllineate -lpc -wtprefix ./__tt_sub-032178_anat_nsu_al_lpc_wtal -weight ./__tt_vr_base_min_outlier_unif_ts_rs_ns_wt+orig -source ./__tt_sub-032178_anat_nsu+orig -prefix ./sub-032178_anat_nsu_al_lpc -base ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig -cmass -1Dmatrix_save ./sub-032178_anat_nsu_al_lpc_mat.aff12.1D -master SOURCE -source_automask+2 -twoblur 1.000000 -blok "RHDD(0.500000)" -onepass 
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Option '-cmass' enables center-of-mass code = 7 = +xyz
+++ Source dataset: ./__tt_sub-032178_anat_nsu+orig.HEAD
+++ Base dataset:   ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig.HEAD
+++ Loading datasets into memory
+++ Local correlation: blok type = 'RHDD(3.26119)'
+++ OpenMP thread count = 15
+++ ======= Allineation of 1 sub-bricks using Local Pearson Correlation Signed =======
+++ *** Fine pass begins ***
+ + Final fine fit Parameters:
+       x-shift= -0.7155   y-shift= -2.6263   z-shift= -0.1229  ...  enorm=  2.7248 mm
+       z-angle= -0.2932   x-angle=  0.9390   y-angle=  0.1597  ...  total=  0.9962 deg
+       x-scale=  1.0032   y-scale=  0.9730   z-scale=  0.9823  ...  vol3D=  0.9589=(0.9861)^3 [base bigger than source]
+     y/x-shear=  0.0025 z/x-shear=  0.0000 z/y-shear=  0.0007
+++ Wrote -1Dmatrix_save ./sub-032178_anat_nsu_al_lpc_mat.aff12.1D
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 15.2
+++ ###########################################################
+++ #   PLEASE check results VISUALLY for alignment quality   #
+++ ###########################################################
+#++ Creating final output: anat data aligned to epi
+# copy is not necessary
+#++ Saving history
+#Script is running (command trimmed):
+  3dNotes -h "align_epi_anat.py -anat2epi -anat sub-032178_anat_nsu+orig \
+ -suffix _al -epi vr_base_min_outlier_unif+orig -epi_base 0 -epi_strip \
+ 3dAutomask -anat_has_skull no -cmass cmass -feature_size 0.5 -cost nmi \
+ -Allineate_opts -source_automask+2 -multi_cost ls lpc lpc+ lpc+ZZ mi sp \
+ crA crM crU hel lpa lpa+ lpa+ZZ je lss -volreg off -tshift off" \
+ ./sub-032178_anat_nsu_al_lpc+orig
+
+#++ Aligning anat data to epi data
+#Script is running (command trimmed):
+  3dAllineate -lpc+ -wtprefix ./__tt_sub-032178_anat_nsu_al_lpc+_wtal -weight ./__tt_vr_base_min_outlier_unif_ts_rs_ns_wt+orig -source ./__tt_sub-032178_anat_nsu+orig -prefix ./sub-032178_anat_nsu_al_lpc+ -base ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig -cmass -1Dmatrix_save ./sub-032178_anat_nsu_al_lpc+_mat.aff12.1D -master SOURCE -source_automask+2 -twoblur 1.000000 -blok "RHDD(0.500000)" -onepass 
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Option '-cmass' enables center-of-mass code = 7 = +xyz
+++ Source dataset: ./__tt_sub-032178_anat_nsu+orig.HEAD
+++ Base dataset:   ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig.HEAD
+++ Loading datasets into memory
+++ Local correlation: blok type = 'RHDD(3.26119)'
+++ lpc+ parameters: hel=0.40 mi=0.20 nmi=0.20 crA=0.40 ov=0.40 
+++ OpenMP thread count = 15
+++ ======= Allineation of 1 sub-bricks using Local Pearson Signed + Others =======
+++ *** Fine pass begins ***
+ + Final fine fit Parameters:
+       x-shift= -0.9196   y-shift= -1.2080   z-shift=  0.4381  ...  enorm=  1.5801 mm
+       z-angle=  0.0316   x-angle=  0.1563   y-angle=  0.1273  ...  total=  0.2037 deg
+       x-scale=  0.9954   y-scale=  0.9931   z-scale=  0.9868  ...  vol3D=  0.9755=(0.9918)^3 [base about same as source]
+     y/x-shear=  0.0012 z/x-shear= -0.0025 z/y-shear= -0.0002
+++ Wrote -1Dmatrix_save ./sub-032178_anat_nsu_al_lpc+_mat.aff12.1D
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 39.4
+++ ###########################################################
+++ #   PLEASE check results VISUALLY for alignment quality   #
+++ ###########################################################
+#++ Creating final output: anat data aligned to epi
+# copy is not necessary
+#++ Saving history
+#Script is running (command trimmed):
+  3dNotes -h "align_epi_anat.py -anat2epi -anat sub-032178_anat_nsu+orig \
+ -suffix _al -epi vr_base_min_outlier_unif+orig -epi_base 0 -epi_strip \
+ 3dAutomask -anat_has_skull no -cmass cmass -feature_size 0.5 -cost nmi \
+ -Allineate_opts -source_automask+2 -multi_cost ls lpc lpc+ lpc+ZZ mi sp \
+ crA crM crU hel lpa lpa+ lpa+ZZ je lss -volreg off -tshift off" \
+ ./sub-032178_anat_nsu_al_lpc++orig
+
+#++ Aligning anat data to epi data
+#Script is running (command trimmed):
+  3dAllineate -lpc+ZZ -wtprefix ./__tt_sub-032178_anat_nsu_al_lpc+ZZ_wtal -weight ./__tt_vr_base_min_outlier_unif_ts_rs_ns_wt+orig -source ./__tt_sub-032178_anat_nsu+orig -prefix ./sub-032178_anat_nsu_al_lpc+ZZ -base ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig -cmass -1Dmatrix_save ./sub-032178_anat_nsu_al_lpc+ZZ_mat.aff12.1D -master SOURCE -source_automask+2 -twoblur 1.000000 -blok "RHDD(0.500000)" -onepass 
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ lpc+ parameters: hel=0.40 mi=0.20 nmi=0.20 crA=0.40 ov=0.40 [to be zeroed at Final iteration]
+++ Option '-cmass' enables center-of-mass code = 7 = +xyz
+++ Source dataset: ./__tt_sub-032178_anat_nsu+orig.HEAD
+++ Base dataset:   ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig.HEAD
+++ Loading datasets into memory
+++ Local correlation: blok type = 'RHDD(3.26119)'
+++ lpc+ parameters: hel=0.40 mi=0.20 nmi=0.20 crA=0.40 ov=0.40 [to be zeroed at Final iteration]
+++ OpenMP thread count = 15
+++ ======= Allineation of 1 sub-bricks using Local Pearson Signed + Others =======
+++ *** Fine pass begins ***
+ + Final fine fit Parameters:
+       x-shift= -1.2893   y-shift= -1.0431   z-shift=  0.2255  ...  enorm=  1.6736 mm
+       z-angle= -0.0534   x-angle= -0.0866   y-angle= -0.0138  ...  total=  0.1009 deg
+       x-scale=  0.9921   y-scale=  0.9920   z-scale=  0.9890  ...  vol3D=  0.9733=(0.9910)^3 [base about same as source]
+     y/x-shear=  0.0010 z/x-shear=  0.0007 z/y-shear= -0.0077
+++ Wrote -1Dmatrix_save ./sub-032178_anat_nsu_al_lpc+ZZ_mat.aff12.1D
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 23.5
+++ ###########################################################
+++ #   PLEASE check results VISUALLY for alignment quality   #
+++ ###########################################################
+#++ Creating final output: anat data aligned to epi
+# copy is not necessary
+#++ Saving history
+#Script is running (command trimmed):
+  3dNotes -h "align_epi_anat.py -anat2epi -anat sub-032178_anat_nsu+orig \
+ -suffix _al -epi vr_base_min_outlier_unif+orig -epi_base 0 -epi_strip \
+ 3dAutomask -anat_has_skull no -cmass cmass -feature_size 0.5 -cost nmi \
+ -Allineate_opts -source_automask+2 -multi_cost ls lpc lpc+ lpc+ZZ mi sp \
+ crA crM crU hel lpa lpa+ lpa+ZZ je lss -volreg off -tshift off" \
+ ./sub-032178_anat_nsu_al_lpc+ZZ+orig
+
+#++ Aligning anat data to epi data
+#Script is running (command trimmed):
+  3dAllineate -mi -wtprefix ./__tt_sub-032178_anat_nsu_al_mi_wtal -weight ./__tt_vr_base_min_outlier_unif_ts_rs_ns_wt+orig -source ./__tt_sub-032178_anat_nsu+orig -prefix ./sub-032178_anat_nsu_al_mi -base ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig -cmass -1Dmatrix_save ./sub-032178_anat_nsu_al_mi_mat.aff12.1D -master SOURCE -source_automask+2 -twoblur 1.000000 -blok "RHDD(0.500000)" -onepass 
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Option '-cmass' enables center-of-mass code = 7 = +xyz
+++ Source dataset: ./__tt_sub-032178_anat_nsu+orig.HEAD
+++ Base dataset:   ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig.HEAD
+++ Loading datasets into memory
+++ OpenMP thread count = 15
+++ ======= Allineation of 1 sub-bricks using Mutual Information [H(b)+H(s)-H(b,s)] =======
+++ *** Fine pass begins ***
+ + Final fine fit Parameters:
+       x-shift= -0.7825   y-shift= -0.2011   z-shift= -2.0688  ...  enorm=  2.2209 mm
+       z-angle= -0.0126   x-angle= -0.2799   y-angle= -0.0115  ...  total=  0.2798 deg
+       x-scale=  0.9997   y-scale=  0.9993   z-scale=  1.0026  ...  vol3D=  1.0016=(1.0005)^3 [base about same as source]
+     y/x-shear= -0.0002 z/x-shear= -0.0157 z/y-shear= -0.0155
+++ Wrote -1Dmatrix_save ./sub-032178_anat_nsu_al_mi_mat.aff12.1D
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 14.3
+++ ###########################################################
+++ #   PLEASE check results VISUALLY for alignment quality   #
+++ ###########################################################
+#++ Creating final output: anat data aligned to epi
+# copy is not necessary
+#++ Saving history
+#Script is running (command trimmed):
+  3dNotes -h "align_epi_anat.py -anat2epi -anat sub-032178_anat_nsu+orig \
+ -suffix _al -epi vr_base_min_outlier_unif+orig -epi_base 0 -epi_strip \
+ 3dAutomask -anat_has_skull no -cmass cmass -feature_size 0.5 -cost nmi \
+ -Allineate_opts -source_automask+2 -multi_cost ls lpc lpc+ lpc+ZZ mi sp \
+ crA crM crU hel lpa lpa+ lpa+ZZ je lss -volreg off -tshift off" \
+ ./sub-032178_anat_nsu_al_mi+orig
+
+#++ Aligning anat data to epi data
+#Script is running (command trimmed):
+  3dAllineate -sp -wtprefix ./__tt_sub-032178_anat_nsu_al_sp_wtal -weight ./__tt_vr_base_min_outlier_unif_ts_rs_ns_wt+orig -source ./__tt_sub-032178_anat_nsu+orig -prefix ./sub-032178_anat_nsu_al_sp -base ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig -cmass -1Dmatrix_save ./sub-032178_anat_nsu_al_sp_mat.aff12.1D -master SOURCE -source_automask+2 -twoblur 1.000000 -blok "RHDD(0.500000)" -onepass 
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Option '-cmass' enables center-of-mass code = 7 = +xyz
+++ Source dataset: ./__tt_sub-032178_anat_nsu+orig.HEAD
+++ Base dataset:   ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig.HEAD
+++ Loading datasets into memory
+++ OpenMP thread count = 15
+++ ======= Allineation of 1 sub-bricks using Spearman [rank] Correlation =======
+++ *** Fine pass begins ***
+ + Final fine fit Parameters:
+       x-shift= -0.5092   y-shift=  1.6544   z-shift= -3.6116  ...  enorm=  4.0049 mm
+       z-angle=  0.0264   x-angle=  0.1127   y-angle=  0.1530  ...  total=  0.1918 deg
+       x-scale=  1.0022   y-scale=  1.0096   z-scale=  0.9724  ...  vol3D=  0.9839=(0.9946)^3 [base about same as source]
+     y/x-shear=  0.0034 z/x-shear=  0.0014 z/y-shear= -0.0167
+++ Wrote -1Dmatrix_save ./sub-032178_anat_nsu_al_sp_mat.aff12.1D
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 149.1
+++ ###########################################################
+++ #   PLEASE check results VISUALLY for alignment quality   #
+++ ###########################################################
+#++ Creating final output: anat data aligned to epi
+# copy is not necessary
+#++ Saving history
+#Script is running (command trimmed):
+  3dNotes -h "align_epi_anat.py -anat2epi -anat sub-032178_anat_nsu+orig \
+ -suffix _al -epi vr_base_min_outlier_unif+orig -epi_base 0 -epi_strip \
+ 3dAutomask -anat_has_skull no -cmass cmass -feature_size 0.5 -cost nmi \
+ -Allineate_opts -source_automask+2 -multi_cost ls lpc lpc+ lpc+ZZ mi sp \
+ crA crM crU hel lpa lpa+ lpa+ZZ je lss -volreg off -tshift off" \
+ ./sub-032178_anat_nsu_al_sp+orig
+
+#++ Aligning anat data to epi data
+#Script is running (command trimmed):
+  3dAllineate -crA -wtprefix ./__tt_sub-032178_anat_nsu_al_crA_wtal -weight ./__tt_vr_base_min_outlier_unif_ts_rs_ns_wt+orig -source ./__tt_sub-032178_anat_nsu+orig -prefix ./sub-032178_anat_nsu_al_crA -base ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig -cmass -1Dmatrix_save ./sub-032178_anat_nsu_al_crA_mat.aff12.1D -master SOURCE -source_automask+2 -twoblur 1.000000 -blok "RHDD(0.500000)" -onepass 
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Option '-cmass' enables center-of-mass code = 7 = +xyz
+++ Source dataset: ./__tt_sub-032178_anat_nsu+orig.HEAD
+++ Base dataset:   ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig.HEAD
+++ Loading datasets into memory
+++ OpenMP thread count = 15
+++ ======= Allineation of 1 sub-bricks using Correlation Ratio (Symmetrized+) =======
+++ *** Fine pass begins ***
+ + Final fine fit Parameters:
+       x-shift= -0.6936   y-shift=  0.7403   z-shift=  0.8045  ...  enorm=  1.2947 mm
+       z-angle=  0.0062   x-angle= -0.6356   y-angle=  0.0886  ...  total=  0.6416 deg
+       x-scale=  1.0000   y-scale=  1.0274   z-scale=  1.0083  ...  vol3D=  1.0359=(1.0118)^3 [base smaller than source]
+     y/x-shear=  0.0021 z/x-shear= -0.0037 z/y-shear= -0.0015
+++ Wrote -1Dmatrix_save ./sub-032178_anat_nsu_al_crA_mat.aff12.1D
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 14.0
+++ ###########################################################
+++ #   PLEASE check results VISUALLY for alignment quality   #
+++ ###########################################################
+#++ Creating final output: anat data aligned to epi
+# copy is not necessary
+#++ Saving history
+#Script is running (command trimmed):
+  3dNotes -h "align_epi_anat.py -anat2epi -anat sub-032178_anat_nsu+orig \
+ -suffix _al -epi vr_base_min_outlier_unif+orig -epi_base 0 -epi_strip \
+ 3dAutomask -anat_has_skull no -cmass cmass -feature_size 0.5 -cost nmi \
+ -Allineate_opts -source_automask+2 -multi_cost ls lpc lpc+ lpc+ZZ mi sp \
+ crA crM crU hel lpa lpa+ lpa+ZZ je lss -volreg off -tshift off" \
+ ./sub-032178_anat_nsu_al_crA+orig
+
+#++ Aligning anat data to epi data
+#Script is running (command trimmed):
+  3dAllineate -crM -wtprefix ./__tt_sub-032178_anat_nsu_al_crM_wtal -weight ./__tt_vr_base_min_outlier_unif_ts_rs_ns_wt+orig -source ./__tt_sub-032178_anat_nsu+orig -prefix ./sub-032178_anat_nsu_al_crM -base ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig -cmass -1Dmatrix_save ./sub-032178_anat_nsu_al_crM_mat.aff12.1D -master SOURCE -source_automask+2 -twoblur 1.000000 -blok "RHDD(0.500000)" -onepass 
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Option '-cmass' enables center-of-mass code = 7 = +xyz
+++ Source dataset: ./__tt_sub-032178_anat_nsu+orig.HEAD
+++ Base dataset:   ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig.HEAD
+++ Loading datasets into memory
+++ OpenMP thread count = 15
+++ ======= Allineation of 1 sub-bricks using Correlation Ratio (Symmetrized*) =======
+++ *** Fine pass begins ***
+ + Final fine fit Parameters:
+       x-shift= -1.0215   y-shift=  1.3012   z-shift=  0.2483  ...  enorm=  1.6728 mm
+       z-angle= -0.6592   x-angle= -0.3322   y-angle=  0.7013  ...  total=  1.0195 deg
+       x-scale=  1.0005   y-scale=  1.0310   z-scale=  1.0361  ...  vol3D=  1.0688=(1.0224)^3 [base smaller than source]
+     y/x-shear= -0.0038 z/x-shear=  0.0006 z/y-shear=  0.0004
+++ Wrote -1Dmatrix_save ./sub-032178_anat_nsu_al_crM_mat.aff12.1D
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 14.1
+++ ###########################################################
+++ #   PLEASE check results VISUALLY for alignment quality   #
+++ ###########################################################
+#++ Creating final output: anat data aligned to epi
+# copy is not necessary
+#++ Saving history
+#Script is running (command trimmed):
+  3dNotes -h "align_epi_anat.py -anat2epi -anat sub-032178_anat_nsu+orig \
+ -suffix _al -epi vr_base_min_outlier_unif+orig -epi_base 0 -epi_strip \
+ 3dAutomask -anat_has_skull no -cmass cmass -feature_size 0.5 -cost nmi \
+ -Allineate_opts -source_automask+2 -multi_cost ls lpc lpc+ lpc+ZZ mi sp \
+ crA crM crU hel lpa lpa+ lpa+ZZ je lss -volreg off -tshift off" \
+ ./sub-032178_anat_nsu_al_crM+orig
+
+#++ Aligning anat data to epi data
+#Script is running (command trimmed):
+  3dAllineate -crU -wtprefix ./__tt_sub-032178_anat_nsu_al_crU_wtal -weight ./__tt_vr_base_min_outlier_unif_ts_rs_ns_wt+orig -source ./__tt_sub-032178_anat_nsu+orig -prefix ./sub-032178_anat_nsu_al_crU -base ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig -cmass -1Dmatrix_save ./sub-032178_anat_nsu_al_crU_mat.aff12.1D -master SOURCE -source_automask+2 -twoblur 1.000000 -blok "RHDD(0.500000)" -onepass 
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Option '-cmass' enables center-of-mass code = 7 = +xyz
+++ Source dataset: ./__tt_sub-032178_anat_nsu+orig.HEAD
+++ Base dataset:   ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig.HEAD
+++ Loading datasets into memory
+++ OpenMP thread count = 15
+++ ======= Allineation of 1 sub-bricks using Correlation Ratio (Unsym) =======
+++ *** Fine pass begins ***
+ + Final fine fit Parameters:
+       x-shift= -0.2730   y-shift= -0.1984   z-shift=  0.7671  ...  enorm=  0.8381 mm
+       z-angle= -0.1806   x-angle=  0.1880   y-angle=  0.0251  ...  total=  0.2617 deg
+       x-scale=  1.0084   y-scale=  1.0152   z-scale=  0.9983  ...  vol3D=  1.0220=(1.0073)^3 [base about same as source]
+     y/x-shear=  0.0012 z/x-shear= -0.0002 z/y-shear=  0.0030
+++ Wrote -1Dmatrix_save ./sub-032178_anat_nsu_al_crU_mat.aff12.1D
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 13.0
+++ ###########################################################
+++ #   PLEASE check results VISUALLY for alignment quality   #
+++ ###########################################################
+#++ Creating final output: anat data aligned to epi
+# copy is not necessary
+#++ Saving history
+#Script is running (command trimmed):
+  3dNotes -h "align_epi_anat.py -anat2epi -anat sub-032178_anat_nsu+orig \
+ -suffix _al -epi vr_base_min_outlier_unif+orig -epi_base 0 -epi_strip \
+ 3dAutomask -anat_has_skull no -cmass cmass -feature_size 0.5 -cost nmi \
+ -Allineate_opts -source_automask+2 -multi_cost ls lpc lpc+ lpc+ZZ mi sp \
+ crA crM crU hel lpa lpa+ lpa+ZZ je lss -volreg off -tshift off" \
+ ./sub-032178_anat_nsu_al_crU+orig
+
+#++ Aligning anat data to epi data
+#Script is running (command trimmed):
+  3dAllineate -hel -wtprefix ./__tt_sub-032178_anat_nsu_al_hel_wtal -weight ./__tt_vr_base_min_outlier_unif_ts_rs_ns_wt+orig -source ./__tt_sub-032178_anat_nsu+orig -prefix ./sub-032178_anat_nsu_al_hel -base ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig -cmass -1Dmatrix_save ./sub-032178_anat_nsu_al_hel_mat.aff12.1D -master SOURCE -source_automask+2 -twoblur 1.000000 -blok "RHDD(0.500000)" -onepass 
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Option '-cmass' enables center-of-mass code = 7 = +xyz
+++ Source dataset: ./__tt_sub-032178_anat_nsu+orig.HEAD
+++ Base dataset:   ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig.HEAD
+++ Loading datasets into memory
+++ OpenMP thread count = 15
+++ ======= Allineation of 1 sub-bricks using Hellinger metric =======
+++ *** Fine pass begins ***
+ + Final fine fit Parameters:
+       x-shift= -0.5899   y-shift= -0.5374   z-shift=  0.9312  ...  enorm=  1.2264 mm
+       z-angle= -0.0234   x-angle= -0.0402   y-angle=  0.2089  ...  total=  0.2140 deg
+       x-scale=  1.0013   y-scale=  1.0026   z-scale=  1.0048  ...  vol3D=  1.0087=(1.0029)^3 [base about same as source]
+     y/x-shear= -0.0003 z/x-shear=  0.0042 z/y-shear=  0.0001
+++ Wrote -1Dmatrix_save ./sub-032178_anat_nsu_al_hel_mat.aff12.1D
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 14.2
+++ ###########################################################
+++ #   PLEASE check results VISUALLY for alignment quality   #
+++ ###########################################################
+#++ Creating final output: anat data aligned to epi
+# copy is not necessary
+#++ Saving history
+#Script is running (command trimmed):
+  3dNotes -h "align_epi_anat.py -anat2epi -anat sub-032178_anat_nsu+orig \
+ -suffix _al -epi vr_base_min_outlier_unif+orig -epi_base 0 -epi_strip \
+ 3dAutomask -anat_has_skull no -cmass cmass -feature_size 0.5 -cost nmi \
+ -Allineate_opts -source_automask+2 -multi_cost ls lpc lpc+ lpc+ZZ mi sp \
+ crA crM crU hel lpa lpa+ lpa+ZZ je lss -volreg off -tshift off" \
+ ./sub-032178_anat_nsu_al_hel+orig
+
+#++ Aligning anat data to epi data
+#Script is running (command trimmed):
+  3dAllineate -lpa -wtprefix ./__tt_sub-032178_anat_nsu_al_lpa_wtal -weight ./__tt_vr_base_min_outlier_unif_ts_rs_ns_wt+orig -source ./__tt_sub-032178_anat_nsu+orig -prefix ./sub-032178_anat_nsu_al_lpa -base ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig -cmass -1Dmatrix_save ./sub-032178_anat_nsu_al_lpa_mat.aff12.1D -master SOURCE -source_automask+2 -twoblur 1.000000 -blok "RHDD(0.500000)" -onepass 
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Option '-cmass' enables center-of-mass code = 7 = +xyz
+++ Source dataset: ./__tt_sub-032178_anat_nsu+orig.HEAD
+++ Base dataset:   ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig.HEAD
+++ Loading datasets into memory
+++ Local correlation: blok type = 'RHDD(3.26119)'
+++ OpenMP thread count = 15
+++ ======= Allineation of 1 sub-bricks using Local Pearson Correlation Abs =======
+++ *** Fine pass begins ***
+ + Final fine fit Parameters:
+       x-shift= -0.5714   y-shift= -1.0202   z-shift=  0.3380  ...  enorm=  1.2172 mm
+       z-angle= -0.2313   x-angle= -0.1157   y-angle=  0.0966  ...  total=  0.2762 deg
+       x-scale=  1.0053   y-scale=  0.9918   z-scale=  0.9870  ...  vol3D=  0.9841=(0.9947)^3 [base about same as source]
+     y/x-shear= -0.0017 z/x-shear=  0.0006 z/y-shear= -0.0090
+++ Wrote -1Dmatrix_save ./sub-032178_anat_nsu_al_lpa_mat.aff12.1D
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 15.9
+++ ###########################################################
+++ #   PLEASE check results VISUALLY for alignment quality   #
+++ ###########################################################
+#++ Creating final output: anat data aligned to epi
+# copy is not necessary
+#++ Saving history
+#Script is running (command trimmed):
+  3dNotes -h "align_epi_anat.py -anat2epi -anat sub-032178_anat_nsu+orig \
+ -suffix _al -epi vr_base_min_outlier_unif+orig -epi_base 0 -epi_strip \
+ 3dAutomask -anat_has_skull no -cmass cmass -feature_size 0.5 -cost nmi \
+ -Allineate_opts -source_automask+2 -multi_cost ls lpc lpc+ lpc+ZZ mi sp \
+ crA crM crU hel lpa lpa+ lpa+ZZ je lss -volreg off -tshift off" \
+ ./sub-032178_anat_nsu_al_lpa+orig
+
+#++ Aligning anat data to epi data
+#Script is running (command trimmed):
+  3dAllineate -lpa+ -wtprefix ./__tt_sub-032178_anat_nsu_al_lpa+_wtal -weight ./__tt_vr_base_min_outlier_unif_ts_rs_ns_wt+orig -source ./__tt_sub-032178_anat_nsu+orig -prefix ./sub-032178_anat_nsu_al_lpa+ -base ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig -cmass -1Dmatrix_save ./sub-032178_anat_nsu_al_lpa+_mat.aff12.1D -master SOURCE -source_automask+2 -twoblur 1.000000 -blok "RHDD(0.500000)" -onepass 
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Option '-cmass' enables center-of-mass code = 7 = +xyz
+++ Source dataset: ./__tt_sub-032178_anat_nsu+orig.HEAD
+++ Base dataset:   ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig.HEAD
+++ Loading datasets into memory
+++ Local correlation: blok type = 'RHDD(3.26119)'
+++ lpa+ parameters: hel=0.40 mi=0.20 nmi=0.20 crA=0.40 ov=0.40 
+++ OpenMP thread count = 15
+++ ======= Allineation of 1 sub-bricks using Local Pearson Abs + Others =======
+++ *** Fine pass begins ***
+ + Final fine fit Parameters:
+       x-shift= -3.4479   y-shift= -4.6611   z-shift=  0.2235  ...  enorm=  5.8020 mm
+       z-angle= -0.0677   x-angle= -0.1552   y-angle= -0.3183  ...  total=  0.3610 deg
+       x-scale=  0.9604   y-scale=  0.9265   z-scale=  0.9529  ...  vol3D=  0.8478=(0.9465)^3 [base bigger than source]
+     y/x-shear= -0.0016 z/x-shear=  0.0072 z/y-shear= -0.0344
+++ Wrote -1Dmatrix_save ./sub-032178_anat_nsu_al_lpa+_mat.aff12.1D
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 43.8
+++ ###########################################################
+++ #   PLEASE check results VISUALLY for alignment quality   #
+++ ###########################################################
+#++ Creating final output: anat data aligned to epi
+# copy is not necessary
+#++ Saving history
+#Script is running (command trimmed):
+  3dNotes -h "align_epi_anat.py -anat2epi -anat sub-032178_anat_nsu+orig \
+ -suffix _al -epi vr_base_min_outlier_unif+orig -epi_base 0 -epi_strip \
+ 3dAutomask -anat_has_skull no -cmass cmass -feature_size 0.5 -cost nmi \
+ -Allineate_opts -source_automask+2 -multi_cost ls lpc lpc+ lpc+ZZ mi sp \
+ crA crM crU hel lpa lpa+ lpa+ZZ je lss -volreg off -tshift off" \
+ ./sub-032178_anat_nsu_al_lpa++orig
+
+#++ Aligning anat data to epi data
+#Script is running (command trimmed):
+  3dAllineate -lpa+ZZ -wtprefix ./__tt_sub-032178_anat_nsu_al_lpa+ZZ_wtal -weight ./__tt_vr_base_min_outlier_unif_ts_rs_ns_wt+orig -source ./__tt_sub-032178_anat_nsu+orig -prefix ./sub-032178_anat_nsu_al_lpa+ZZ -base ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig -cmass -1Dmatrix_save ./sub-032178_anat_nsu_al_lpa+ZZ_mat.aff12.1D -master SOURCE -source_automask+2 -twoblur 1.000000 -blok "RHDD(0.500000)" -onepass 
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ lpa+ parameters: hel=0.40 mi=0.00 nmi=0.20 crA=0.40 ov=0.40 [to be zeroed at Final iteration]
+++ Option '-cmass' enables center-of-mass code = 7 = +xyz
+++ Source dataset: ./__tt_sub-032178_anat_nsu+orig.HEAD
+++ Base dataset:   ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig.HEAD
+++ Loading datasets into memory
+++ Local correlation: blok type = 'RHDD(3.26119)'
+++ lpa+ parameters: hel=0.40 mi=0.00 nmi=0.20 crA=0.40 ov=0.40 [to be zeroed at Final iteration]
+++ OpenMP thread count = 15
+++ ======= Allineation of 1 sub-bricks using Local Pearson Abs + Others =======
+++ *** Fine pass begins ***
+ + Final fine fit Parameters:
+       x-shift= -0.5571   y-shift= -2.4124   z-shift= -0.0661  ...  enorm=  2.4768 mm
+       z-angle= -0.2252   x-angle= -0.0826   y-angle=  0.1123  ...  total=  0.2647 deg
+       x-scale=  1.0053   y-scale=  0.9656   z-scale=  0.9787  ...  vol3D=  0.9500=(0.9831)^3 [base bigger than source]
+     y/x-shear=  0.0030 z/x-shear=  0.0006 z/y-shear= -0.0184
+++ Wrote -1Dmatrix_save ./sub-032178_anat_nsu_al_lpa+ZZ_mat.aff12.1D
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 29.4
+++ ###########################################################
+++ #   PLEASE check results VISUALLY for alignment quality   #
+++ ###########################################################
+#++ Creating final output: anat data aligned to epi
+# copy is not necessary
+#++ Saving history
+#Script is running (command trimmed):
+  3dNotes -h "align_epi_anat.py -anat2epi -anat sub-032178_anat_nsu+orig \
+ -suffix _al -epi vr_base_min_outlier_unif+orig -epi_base 0 -epi_strip \
+ 3dAutomask -anat_has_skull no -cmass cmass -feature_size 0.5 -cost nmi \
+ -Allineate_opts -source_automask+2 -multi_cost ls lpc lpc+ lpc+ZZ mi sp \
+ crA crM crU hel lpa lpa+ lpa+ZZ je lss -volreg off -tshift off" \
+ ./sub-032178_anat_nsu_al_lpa+ZZ+orig
+
+#++ Aligning anat data to epi data
+#Script is running (command trimmed):
+  3dAllineate -je -wtprefix ./__tt_sub-032178_anat_nsu_al_je_wtal -weight ./__tt_vr_base_min_outlier_unif_ts_rs_ns_wt+orig -source ./__tt_sub-032178_anat_nsu+orig -prefix ./sub-032178_anat_nsu_al_je -base ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig -cmass -1Dmatrix_save ./sub-032178_anat_nsu_al_je_mat.aff12.1D -master SOURCE -source_automask+2 -twoblur 1.000000 -blok "RHDD(0.500000)" -onepass 
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Option '-cmass' enables center-of-mass code = 7 = +xyz
+++ Source dataset: ./__tt_sub-032178_anat_nsu+orig.HEAD
+++ Base dataset:   ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig.HEAD
+++ Loading datasets into memory
+++ OpenMP thread count = 15
+++ ======= Allineation of 1 sub-bricks using Joint Entropy [H(b,s)] =======
+++ *** Fine pass begins ***
+ + Final fine fit Parameters:
+       x-shift= -0.7825   y-shift= -0.2011   z-shift= -2.0688  ...  enorm=  2.2209 mm
+       z-angle= -0.0126   x-angle= -0.2799   y-angle= -0.0115  ...  total=  0.2798 deg
+       x-scale=  0.9997   y-scale=  0.9993   z-scale=  1.0026  ...  vol3D=  1.0016=(1.0005)^3 [base about same as source]
+     y/x-shear= -0.0002 z/x-shear= -0.0157 z/y-shear= -0.0155
+++ Wrote -1Dmatrix_save ./sub-032178_anat_nsu_al_je_mat.aff12.1D
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 14.3
+++ ###########################################################
+++ #   PLEASE check results VISUALLY for alignment quality   #
+++ ###########################################################
+#++ Creating final output: anat data aligned to epi
+# copy is not necessary
+#++ Saving history
+#Script is running (command trimmed):
+  3dNotes -h "align_epi_anat.py -anat2epi -anat sub-032178_anat_nsu+orig \
+ -suffix _al -epi vr_base_min_outlier_unif+orig -epi_base 0 -epi_strip \
+ 3dAutomask -anat_has_skull no -cmass cmass -feature_size 0.5 -cost nmi \
+ -Allineate_opts -source_automask+2 -multi_cost ls lpc lpc+ lpc+ZZ mi sp \
+ crA crM crU hel lpa lpa+ lpa+ZZ je lss -volreg off -tshift off" \
+ ./sub-032178_anat_nsu_al_je+orig
+
+#++ Aligning anat data to epi data
+#Script is running (command trimmed):
+  3dAllineate -lss -wtprefix ./__tt_sub-032178_anat_nsu_al_lss_wtal -weight ./__tt_vr_base_min_outlier_unif_ts_rs_ns_wt+orig -source ./__tt_sub-032178_anat_nsu+orig -prefix ./sub-032178_anat_nsu_al_lss -base ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig -cmass -1Dmatrix_save ./sub-032178_anat_nsu_al_lss_mat.aff12.1D -master SOURCE -source_automask+2 -twoblur 1.000000 -blok "RHDD(0.500000)" -onepass 
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Option '-cmass' enables center-of-mass code = 7 = +xyz
+++ Source dataset: ./__tt_sub-032178_anat_nsu+orig.HEAD
+++ Base dataset:   ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig.HEAD
+++ Loading datasets into memory
+++ OpenMP thread count = 15
+++ ======= Allineation of 1 sub-bricks using Signed Pearson Correlation =======
+++ *** Fine pass begins ***
+ + Final fine fit Parameters:
+       x-shift=  5.9311   y-shift=  4.8564   z-shift=  8.6225  ...  enorm= 11.5373 mm
+       z-angle=  2.0611   x-angle= -2.3247   y-angle= -2.6902  ...  total=  4.1367 deg
+       x-scale=  1.0863   y-scale=  1.0654   z-scale=  0.8239  ...  vol3D=  0.9535=(0.9843)^3 [base bigger than source]
+     y/x-shear=  0.0114 z/x-shear=  0.0072 z/y-shear= -0.0429
+++ Wrote -1Dmatrix_save ./sub-032178_anat_nsu_al_lss_mat.aff12.1D
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 18.4
+++ ###########################################################
+++ #   PLEASE check results VISUALLY for alignment quality   #
+++ ###########################################################
+#++ Creating final output: anat data aligned to epi
+# copy is not necessary
+#++ Saving history
+#Script is running (command trimmed):
+  3dNotes -h "align_epi_anat.py -anat2epi -anat sub-032178_anat_nsu+orig \
+ -suffix _al -epi vr_base_min_outlier_unif+orig -epi_base 0 -epi_strip \
+ 3dAutomask -anat_has_skull no -cmass cmass -feature_size 0.5 -cost nmi \
+ -Allineate_opts -source_automask+2 -multi_cost ls lpc lpc+ lpc+ZZ mi sp \
+ crA crM crU hel lpa lpa+ lpa+ZZ je lss -volreg off -tshift off" \
+ ./sub-032178_anat_nsu_al_lss+orig
+
+#++ Aligning anat data to epi data
+#Script is running (command trimmed):
+  3dAllineate -nmi -wtprefix ./__tt_sub-032178_anat_nsu_al_wtal -weight ./__tt_vr_base_min_outlier_unif_ts_rs_ns_wt+orig -source ./__tt_sub-032178_anat_nsu+orig -prefix ./sub-032178_anat_nsu_al -base ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig -cmass -1Dmatrix_save ./sub-032178_anat_nsu_al_mat.aff12.1D -master SOURCE -source_automask+2 -twoblur 1.000000 -blok "RHDD(0.500000)" -onepass 
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Option '-cmass' enables center-of-mass code = 7 = +xyz
+++ Source dataset: ./__tt_sub-032178_anat_nsu+orig.HEAD
+++ Base dataset:   ./__tt_vr_base_min_outlier_unif_ts_rs_ns+orig.HEAD
+++ Loading datasets into memory
+++ OpenMP thread count = 15
+++ ======= Allineation of 1 sub-bricks using Normalized MI [H(b,s)/(H(b)+H(s))] =======
+++ *** Fine pass begins ***
+ + Final fine fit Parameters:
+       x-shift= -0.5958   y-shift= -1.0874   z-shift=  1.1392  ...  enorm=  1.6838 mm
+       z-angle=  0.0151   x-angle=  0.0830   y-angle=  0.1373  ...  total=  0.1619 deg
+       x-scale=  1.0011   y-scale=  1.0033   z-scale=  1.0064  ...  vol3D=  1.0108=(1.0036)^3 [base about same as source]
+     y/x-shear= -0.0001 z/x-shear= -0.0022 z/y-shear=  0.0140
+++ Wrote -1Dmatrix_save ./sub-032178_anat_nsu_al_mat.aff12.1D
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 14.2
+++ ###########################################################
+++ #   PLEASE check results VISUALLY for alignment quality   #
+++ ###########################################################
+#++ Creating final output: anat data aligned to epi
+# copy is not necessary
+#++ Saving history
+#Script is running (command trimmed):
+  3dNotes -h "align_epi_anat.py -anat2epi -anat sub-032178_anat_nsu+orig \
+ -suffix _al -epi vr_base_min_outlier_unif+orig -epi_base 0 -epi_strip \
+ 3dAutomask -anat_has_skull no -cmass cmass -feature_size 0.5 -cost nmi \
+ -Allineate_opts -source_automask+2 -multi_cost ls lpc lpc+ lpc+ZZ mi sp \
+ crA crM crU hel lpa lpa+ lpa+ZZ je lss -volreg off -tshift off" \
+ ./sub-032178_anat_nsu_al+orig
+
+#++ Removing all the temporary files
+#Script is running:
+  \rm -f ./__tt_vr_base_min_outlier_unif*
+#Script is running:
+  \rm -f ./__tt_sub-032178_anat_nsu*
+
+# Finished alignment successfully
+
+@snapshot_volreg vr_base_min_outlier_unif+orig sub-032178_anat_nsu_al+orig sub-032178_anat_nsu_al_nmi.jpg
+ -- trying to start Xvfb :591
+[1] 24933
+++ 3dAutobox: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Auto bbox: x=-5..70  y=-5..70  z=-15..45
+++ 3dAutobox: output dataset = ./zzerm.X591-400053.acrop.nii
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Source dataset: ./sub-032178_anat_nsu_al+orig.HEAD
+++ Base dataset:   (not given)
+++ Loading datasets into memory
+ +        -cmass x y z shifts =    0.000    0.000    0.000
+ +  shift search range is +/- =   40.928   40.928   20.381
+++ OpenMP thread count = 15
+++ ========== Applying transformation to 1 sub-bricks ==========
+++ Output dataset ./zzerm.X591-400053.epiR.nii
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 0.4
+++ ###########################################################
+++ 3dMedianFilter: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Output dataset ./zzerm.X591-400053.epiRS.nii
+++ 3dedge3: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ 3dAutomask: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Emperor Zhark
+++ 3dcalc: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: A cast of thousands
+++ Output dataset ./zzerm.X591-400053.epiEM.nii
+++ Start GUI to snapshot
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X591-400053.sag.jpg'
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X591-400053.cor.jpg'
+++ Writing one 456x152 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X591-400053.axi.jpg'
+
+AFNI QUITTs!
+@snapshot_volreg output image = ./sub-032178_anat_nsu_al_nmi.jpg
+@snapshot_volreg vr_base_min_outlier_unif+orig sub-032178_anat_nsu_al_crA+orig sub-032178_anat_nsu_al_crA.jpg
+ -- trying to start Xvfb :370
+[1] 25057
+++ 3dAutobox: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Auto bbox: x=-5..70  y=-5..70  z=-15..45
+++ 3dAutobox: output dataset = ./zzerm.X370-402056.acrop.nii
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Source dataset: ./sub-032178_anat_nsu_al_crA+orig.HEAD
+++ Base dataset:   (not given)
+++ Loading datasets into memory
+ +        -cmass x y z shifts =    0.000    0.000    0.000
+ +  shift search range is +/- =   40.928   40.928   20.381
+++ OpenMP thread count = 15
+++ ========== Applying transformation to 1 sub-bricks ==========
+++ Output dataset ./zzerm.X370-402056.epiR.nii
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 0.4
+++ ###########################################################
+++ 3dMedianFilter: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Output dataset ./zzerm.X370-402056.epiRS.nii
+++ 3dedge3: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ 3dAutomask: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Emperor Zhark
+++ 3dcalc: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: A cast of thousands
+++ Output dataset ./zzerm.X370-402056.epiEM.nii
+++ Start GUI to snapshot
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X370-402056.sag.jpg'
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X370-402056.cor.jpg'
+++ Writing one 456x152 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X370-402056.axi.jpg'
+
+AFNI QUITTs!
+@snapshot_volreg output image = ./sub-032178_anat_nsu_al_crA.jpg
+@snapshot_volreg vr_base_min_outlier_unif+orig sub-032178_anat_nsu_al_crM+orig sub-032178_anat_nsu_al_crM.jpg
+ -- trying to start Xvfb :437
+[1] 25192
+++ 3dAutobox: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Auto bbox: x=-5..70  y=-5..70  z=-15..45
+++ 3dAutobox: output dataset = ./zzerm.X437-695020.acrop.nii
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Source dataset: ./sub-032178_anat_nsu_al_crM+orig.HEAD
+++ Base dataset:   (not given)
+++ Loading datasets into memory
+ +        -cmass x y z shifts =    0.000    0.000    0.000
+ +  shift search range is +/- =   40.928   40.928   20.381
+++ OpenMP thread count = 15
+++ ========== Applying transformation to 1 sub-bricks ==========
+++ Output dataset ./zzerm.X437-695020.epiR.nii
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 0.4
+++ ###########################################################
+++ 3dMedianFilter: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Output dataset ./zzerm.X437-695020.epiRS.nii
+++ 3dedge3: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ 3dAutomask: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Emperor Zhark
+++ 3dcalc: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: A cast of thousands
+++ Output dataset ./zzerm.X437-695020.epiEM.nii
+++ Start GUI to snapshot
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X437-695020.sag.jpg'
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X437-695020.cor.jpg'
+++ Writing one 456x152 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X437-695020.axi.jpg'
+
+AFNI QUITTs!
+@snapshot_volreg output image = ./sub-032178_anat_nsu_al_crM.jpg
+@snapshot_volreg vr_base_min_outlier_unif+orig sub-032178_anat_nsu_al_crU+orig sub-032178_anat_nsu_al_crU.jpg
+ -- trying to start Xvfb :96
+[1] 25314
+++ 3dAutobox: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Auto bbox: x=-5..70  y=-5..70  z=-15..45
+++ 3dAutobox: output dataset = ./zzerm.X96-643212.acrop.nii
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Source dataset: ./sub-032178_anat_nsu_al_crU+orig.HEAD
+++ Base dataset:   (not given)
+++ Loading datasets into memory
+ +        -cmass x y z shifts =    0.000    0.000    0.000
+ +  shift search range is +/- =   40.928   40.928   20.381
+++ OpenMP thread count = 15
+++ ========== Applying transformation to 1 sub-bricks ==========
+++ Output dataset ./zzerm.X96-643212.epiR.nii
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 0.4
+++ ###########################################################
+++ 3dMedianFilter: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Output dataset ./zzerm.X96-643212.epiRS.nii
+++ 3dedge3: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ 3dAutomask: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Emperor Zhark
+++ 3dcalc: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: A cast of thousands
+++ Output dataset ./zzerm.X96-643212.epiEM.nii
+++ Start GUI to snapshot
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X96-643212.sag.jpg'
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X96-643212.cor.jpg'
+++ Writing one 456x152 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X96-643212.axi.jpg'
+
+AFNI QUITTs!
+@snapshot_volreg output image = ./sub-032178_anat_nsu_al_crU.jpg
+@snapshot_volreg vr_base_min_outlier_unif+orig sub-032178_anat_nsu_al_hel+orig sub-032178_anat_nsu_al_hel.jpg
+ -- trying to start Xvfb :347
+[1] 25434
+++ 3dAutobox: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Auto bbox: x=-5..70  y=-5..70  z=-15..45
+++ 3dAutobox: output dataset = ./zzerm.X347-694893.acrop.nii
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Source dataset: ./sub-032178_anat_nsu_al_hel+orig.HEAD
+++ Base dataset:   (not given)
+++ Loading datasets into memory
+ +        -cmass x y z shifts =    0.000    0.000    0.000
+ +  shift search range is +/- =   40.928   40.928   20.381
+++ OpenMP thread count = 15
+++ ========== Applying transformation to 1 sub-bricks ==========
+++ Output dataset ./zzerm.X347-694893.epiR.nii
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 0.4
+++ ###########################################################
+++ 3dMedianFilter: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Output dataset ./zzerm.X347-694893.epiRS.nii
+++ 3dedge3: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ 3dAutomask: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Emperor Zhark
+++ 3dcalc: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: A cast of thousands
+++ Output dataset ./zzerm.X347-694893.epiEM.nii
+++ Start GUI to snapshot
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X347-694893.sag.jpg'
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X347-694893.cor.jpg'
+++ Writing one 456x152 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X347-694893.axi.jpg'
+
+AFNI QUITTs!
+@snapshot_volreg output image = ./sub-032178_anat_nsu_al_hel.jpg
+@snapshot_volreg vr_base_min_outlier_unif+orig sub-032178_anat_nsu_al_ls+orig sub-032178_anat_nsu_al_ls.jpg
+ -- trying to start Xvfb :289
+[1] 25554
+++ 3dAutobox: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Auto bbox: x=-5..70  y=-5..70  z=-15..45
+++ 3dAutobox: output dataset = ./zzerm.X289-809809.acrop.nii
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Source dataset: ./sub-032178_anat_nsu_al_ls+orig.HEAD
+++ Base dataset:   (not given)
+++ Loading datasets into memory
+ +        -cmass x y z shifts =    0.000    0.000    0.000
+ +  shift search range is +/- =   40.928   40.928   20.381
+++ OpenMP thread count = 15
+++ ========== Applying transformation to 1 sub-bricks ==========
+++ Output dataset ./zzerm.X289-809809.epiR.nii
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 0.4
+++ ###########################################################
+++ 3dMedianFilter: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Output dataset ./zzerm.X289-809809.epiRS.nii
+++ 3dedge3: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ 3dAutomask: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Emperor Zhark
+++ 3dcalc: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: A cast of thousands
+++ Output dataset ./zzerm.X289-809809.epiEM.nii
+++ Start GUI to snapshot
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X289-809809.sag.jpg'
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X289-809809.cor.jpg'
+++ Writing one 456x152 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X289-809809.axi.jpg'
+
+AFNI QUITTs!
+@snapshot_volreg output image = ./sub-032178_anat_nsu_al_ls.jpg
+@snapshot_volreg vr_base_min_outlier_unif+orig sub-032178_anat_nsu_al_lpa+orig sub-032178_anat_nsu_al_lpa.jpg
+ -- trying to start Xvfb :29
+[1] 25676
+++ 3dAutobox: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Auto bbox: x=-5..70  y=-5..70  z=-15..45
+++ 3dAutobox: output dataset = ./zzerm.X29-438455.acrop.nii
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Source dataset: ./sub-032178_anat_nsu_al_lpa+orig.HEAD
+++ Base dataset:   (not given)
+++ Loading datasets into memory
+ +        -cmass x y z shifts =    0.000    0.000    0.000
+ +  shift search range is +/- =   40.928   40.928   20.381
+++ OpenMP thread count = 15
+++ ========== Applying transformation to 1 sub-bricks ==========
+++ Output dataset ./zzerm.X29-438455.epiR.nii
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 0.4
+++ ###########################################################
+++ 3dMedianFilter: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Output dataset ./zzerm.X29-438455.epiRS.nii
+++ 3dedge3: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ 3dAutomask: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Emperor Zhark
+++ 3dcalc: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: A cast of thousands
+++ Output dataset ./zzerm.X29-438455.epiEM.nii
+++ Start GUI to snapshot
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X29-438455.sag.jpg'
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X29-438455.cor.jpg'
+++ Writing one 456x152 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X29-438455.axi.jpg'
+
+AFNI QUITTs!
+@snapshot_volreg output image = ./sub-032178_anat_nsu_al_lpa.jpg
+@snapshot_volreg vr_base_min_outlier_unif+orig sub-032178_anat_nsu_al_lpa++orig sub-032178_anat_nsu_al_lpa+.jpg
+ -- trying to start Xvfb :145
+[1] 25807
+++ 3dAutobox: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Auto bbox: x=-5..70  y=-5..70  z=-15..45
+++ 3dAutobox: output dataset = ./zzerm.X145-856832.acrop.nii
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Source dataset: ./sub-032178_anat_nsu_al_lpa++orig.HEAD
+++ Base dataset:   (not given)
+++ Loading datasets into memory
+ +        -cmass x y z shifts =    0.000    0.000    0.000
+ +  shift search range is +/- =   40.928   40.928   20.381
+++ OpenMP thread count = 15
+++ ========== Applying transformation to 1 sub-bricks ==========
+++ Output dataset ./zzerm.X145-856832.epiR.nii
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 0.4
+++ ###########################################################
+++ 3dMedianFilter: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Output dataset ./zzerm.X145-856832.epiRS.nii
+++ 3dedge3: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ 3dAutomask: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Emperor Zhark
+++ 3dcalc: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: A cast of thousands
+++ Output dataset ./zzerm.X145-856832.epiEM.nii
+++ Start GUI to snapshot
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X145-856832.sag.jpg'
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X145-856832.cor.jpg'
+++ Writing one 456x152 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X145-856832.axi.jpg'
+
+AFNI QUITTs!
+@snapshot_volreg output image = ./sub-032178_anat_nsu_al_lpa+.jpg
+@snapshot_volreg vr_base_min_outlier_unif+orig sub-032178_anat_nsu_al_lpa+ZZ+orig sub-032178_anat_nsu_al_lpa+ZZ.jpg
+ -- trying to start Xvfb :456
+[1] 25928
+++ 3dAutobox: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Auto bbox: x=-5..70  y=-5..70  z=-15..45
+++ 3dAutobox: output dataset = ./zzerm.X456-298461.acrop.nii
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Source dataset: ./sub-032178_anat_nsu_al_lpa+ZZ+orig.HEAD
+++ Base dataset:   (not given)
+++ Loading datasets into memory
+ +        -cmass x y z shifts =    0.000    0.000    0.000
+ +  shift search range is +/- =   40.928   40.928   20.381
+++ OpenMP thread count = 15
+++ ========== Applying transformation to 1 sub-bricks ==========
+++ Output dataset ./zzerm.X456-298461.epiR.nii
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 0.4
+++ ###########################################################
+++ 3dMedianFilter: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Output dataset ./zzerm.X456-298461.epiRS.nii
+++ 3dedge3: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ 3dAutomask: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Emperor Zhark
+++ 3dcalc: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: A cast of thousands
+++ Output dataset ./zzerm.X456-298461.epiEM.nii
+++ Start GUI to snapshot
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X456-298461.sag.jpg'
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X456-298461.cor.jpg'
+++ Writing one 456x152 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X456-298461.axi.jpg'
+
+AFNI QUITTs!
+@snapshot_volreg output image = ./sub-032178_anat_nsu_al_lpa+ZZ.jpg
+@snapshot_volreg vr_base_min_outlier_unif+orig sub-032178_anat_nsu_al_lpc+orig sub-032178_anat_nsu_al_lpc.jpg
+ -- trying to start Xvfb :232
+[1] 26046
+++ 3dAutobox: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Auto bbox: x=-5..70  y=-5..70  z=-15..45
+++ 3dAutobox: output dataset = ./zzerm.X232-228409.acrop.nii
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Source dataset: ./sub-032178_anat_nsu_al_lpc+orig.HEAD
+++ Base dataset:   (not given)
+++ Loading datasets into memory
+ +        -cmass x y z shifts =    0.000    0.000    0.000
+ +  shift search range is +/- =   40.928   40.928   20.381
+++ OpenMP thread count = 15
+++ ========== Applying transformation to 1 sub-bricks ==========
+++ Output dataset ./zzerm.X232-228409.epiR.nii
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 0.4
+++ ###########################################################
+++ 3dMedianFilter: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Output dataset ./zzerm.X232-228409.epiRS.nii
+++ 3dedge3: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ 3dAutomask: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Emperor Zhark
+++ 3dcalc: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: A cast of thousands
+++ Output dataset ./zzerm.X232-228409.epiEM.nii
+++ Start GUI to snapshot
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X232-228409.sag.jpg'
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X232-228409.cor.jpg'
+++ Writing one 456x152 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X232-228409.axi.jpg'
+
+AFNI QUITTs!
+@snapshot_volreg output image = ./sub-032178_anat_nsu_al_lpc.jpg
+@snapshot_volreg vr_base_min_outlier_unif+orig sub-032178_anat_nsu_al_lpc++orig sub-032178_anat_nsu_al_lpc+.jpg
+ -- trying to start Xvfb :230
+[1] 26165
+++ 3dAutobox: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Auto bbox: x=-5..70  y=-5..70  z=-15..45
+++ 3dAutobox: output dataset = ./zzerm.X230-362150.acrop.nii
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Source dataset: ./sub-032178_anat_nsu_al_lpc++orig.HEAD
+++ Base dataset:   (not given)
+++ Loading datasets into memory
+ +        -cmass x y z shifts =    0.000    0.000    0.000
+ +  shift search range is +/- =   40.928   40.928   20.381
+++ OpenMP thread count = 15
+++ ========== Applying transformation to 1 sub-bricks ==========
+++ Output dataset ./zzerm.X230-362150.epiR.nii
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 0.4
+++ ###########################################################
+++ 3dMedianFilter: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Output dataset ./zzerm.X230-362150.epiRS.nii
+++ 3dedge3: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ 3dAutomask: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Emperor Zhark
+++ 3dcalc: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: A cast of thousands
+++ Output dataset ./zzerm.X230-362150.epiEM.nii
+++ Start GUI to snapshot
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X230-362150.sag.jpg'
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X230-362150.cor.jpg'
+++ Writing one 456x152 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X230-362150.axi.jpg'
+
+AFNI QUITTs!
+@snapshot_volreg output image = ./sub-032178_anat_nsu_al_lpc+.jpg
+@snapshot_volreg vr_base_min_outlier_unif+orig sub-032178_anat_nsu_al_lpc+ZZ+orig sub-032178_anat_nsu_al_lpc+ZZ.jpg
+ -- trying to start Xvfb :796
+[1] 26287
+++ 3dAutobox: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Auto bbox: x=-5..70  y=-5..70  z=-15..45
+++ 3dAutobox: output dataset = ./zzerm.X796-623799.acrop.nii
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Source dataset: ./sub-032178_anat_nsu_al_lpc+ZZ+orig.HEAD
+++ Base dataset:   (not given)
+++ Loading datasets into memory
+ +        -cmass x y z shifts =    0.000    0.000    0.000
+ +  shift search range is +/- =   40.928   40.928   20.381
+++ OpenMP thread count = 15
+++ ========== Applying transformation to 1 sub-bricks ==========
+++ Output dataset ./zzerm.X796-623799.epiR.nii
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 0.4
+++ ###########################################################
+++ 3dMedianFilter: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Output dataset ./zzerm.X796-623799.epiRS.nii
+++ 3dedge3: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ 3dAutomask: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Emperor Zhark
+++ 3dcalc: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: A cast of thousands
+++ Output dataset ./zzerm.X796-623799.epiEM.nii
+++ Start GUI to snapshot
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X796-623799.sag.jpg'
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X796-623799.cor.jpg'
+++ Writing one 456x152 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X796-623799.axi.jpg'
+
+AFNI QUITTs!
+@snapshot_volreg output image = ./sub-032178_anat_nsu_al_lpc+ZZ.jpg
+@snapshot_volreg vr_base_min_outlier_unif+orig sub-032178_anat_nsu_al_mi+orig sub-032178_anat_nsu_al_mi.jpg
+ -- trying to start Xvfb :979
+[1] 26406
+++ 3dAutobox: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Auto bbox: x=-5..70  y=-5..70  z=-15..45
+++ 3dAutobox: output dataset = ./zzerm.X979-514604.acrop.nii
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Source dataset: ./sub-032178_anat_nsu_al_mi+orig.HEAD
+++ Base dataset:   (not given)
+++ Loading datasets into memory
+ +        -cmass x y z shifts =    0.000    0.000    0.000
+ +  shift search range is +/- =   40.928   40.928   20.381
+++ OpenMP thread count = 15
+++ ========== Applying transformation to 1 sub-bricks ==========
+++ Output dataset ./zzerm.X979-514604.epiR.nii
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 0.4
+++ ###########################################################
+++ 3dMedianFilter: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Output dataset ./zzerm.X979-514604.epiRS.nii
+++ 3dedge3: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ 3dAutomask: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Emperor Zhark
+++ 3dcalc: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: A cast of thousands
+++ Output dataset ./zzerm.X979-514604.epiEM.nii
+++ Start GUI to snapshot
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X979-514604.sag.jpg'
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X979-514604.cor.jpg'
+++ Writing one 456x152 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X979-514604.axi.jpg'
+
+AFNI QUITTs!
+@snapshot_volreg output image = ./sub-032178_anat_nsu_al_mi.jpg
+@snapshot_volreg vr_base_min_outlier_unif+orig sub-032178_anat_nsu_al_sp+orig sub-032178_anat_nsu_al_sp.jpg
+ -- trying to start Xvfb :346
+[1] 26536
+++ 3dAutobox: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Auto bbox: x=-5..70  y=-5..70  z=-15..45
+++ 3dAutobox: output dataset = ./zzerm.X346-219944.acrop.nii
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Source dataset: ./sub-032178_anat_nsu_al_sp+orig.HEAD
+++ Base dataset:   (not given)
+++ Loading datasets into memory
+ +        -cmass x y z shifts =    0.000    0.000    0.000
+ +  shift search range is +/- =   40.928   40.928   20.381
+++ OpenMP thread count = 15
+++ ========== Applying transformation to 1 sub-bricks ==========
+++ Output dataset ./zzerm.X346-219944.epiR.nii
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 0.4
+++ ###########################################################
+++ 3dMedianFilter: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Output dataset ./zzerm.X346-219944.epiRS.nii
+++ 3dedge3: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ 3dAutomask: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Emperor Zhark
+++ 3dcalc: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: A cast of thousands
+++ Output dataset ./zzerm.X346-219944.epiEM.nii
+++ Start GUI to snapshot
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X346-219944.sag.jpg'
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X346-219944.cor.jpg'
+++ Writing one 456x152 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X346-219944.axi.jpg'
+
+AFNI QUITTs!
+@snapshot_volreg output image = ./sub-032178_anat_nsu_al_sp.jpg
+@snapshot_volreg vr_base_min_outlier_unif+orig sub-032178_anat_nsu_al_je+orig sub-032178_anat_nsu_al_je.jpg
+ -- trying to start Xvfb :679
+[1] 26655
+++ 3dAutobox: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Auto bbox: x=-5..70  y=-5..70  z=-15..45
+++ 3dAutobox: output dataset = ./zzerm.X679-189430.acrop.nii
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Source dataset: ./sub-032178_anat_nsu_al_je+orig.HEAD
+++ Base dataset:   (not given)
+++ Loading datasets into memory
+ +        -cmass x y z shifts =    0.000    0.000    0.000
+ +  shift search range is +/- =   40.928   40.928   20.381
+++ OpenMP thread count = 15
+++ ========== Applying transformation to 1 sub-bricks ==========
+++ Output dataset ./zzerm.X679-189430.epiR.nii
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 0.4
+++ ###########################################################
+++ 3dMedianFilter: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Output dataset ./zzerm.X679-189430.epiRS.nii
+++ 3dedge3: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ 3dAutomask: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Emperor Zhark
+++ 3dcalc: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: A cast of thousands
+++ Output dataset ./zzerm.X679-189430.epiEM.nii
+++ Start GUI to snapshot
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X679-189430.sag.jpg'
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X679-189430.cor.jpg'
+++ Writing one 456x152 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X679-189430.axi.jpg'
+
+AFNI QUITTs!
+@snapshot_volreg output image = ./sub-032178_anat_nsu_al_je.jpg
+@snapshot_volreg vr_base_min_outlier_unif+orig sub-032178_anat_nsu_al_lss+orig sub-032178_anat_nsu_al_lss.jpg
+ -- trying to start Xvfb :372
+[1] 26775
+++ 3dAutobox: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Auto bbox: x=-5..70  y=-5..70  z=-15..45
+++ 3dAutobox: output dataset = ./zzerm.X372-614831.acrop.nii
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Source dataset: ./sub-032178_anat_nsu_al_lss+orig.HEAD
+++ Base dataset:   (not given)
+++ Loading datasets into memory
+ +        -cmass x y z shifts =    0.000    0.000    0.000
+ +  shift search range is +/- =   40.928   40.928   20.381
+++ OpenMP thread count = 15
+++ ========== Applying transformation to 1 sub-bricks ==========
+++ Output dataset ./zzerm.X372-614831.epiR.nii
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 0.4
+++ ###########################################################
+++ 3dMedianFilter: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Output dataset ./zzerm.X372-614831.epiRS.nii
+++ 3dedge3: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ 3dAutomask: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Emperor Zhark
+++ 3dcalc: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: A cast of thousands
+++ Output dataset ./zzerm.X372-614831.epiEM.nii
+++ Start GUI to snapshot
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X372-614831.sag.jpg'
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X372-614831.cor.jpg'
+++ Writing one 456x152 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X372-614831.axi.jpg'
+
+AFNI QUITTs!
+@snapshot_volreg output image = ./sub-032178_anat_nsu_al_lss.jpg
+@snapshot_volreg vr_base_min_outlier_unif+orig sub-032178_anat_nsu+orig sub-032178_anat_nsu_none.jpg
+ -- trying to start Xvfb :20
+[1] 26896
+++ 3dAutobox: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Auto bbox: x=-5..70  y=-5..70  z=-15..45
+++ 3dAutobox: output dataset = ./zzerm.X20-84851.acrop.nii
+++ 3dAllineate: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Zhark the Registrator
+++ Source dataset: ./sub-032178_anat_nsu+orig.HEAD
+++ Base dataset:   (not given)
+++ Loading datasets into memory
+ +        -cmass x y z shifts =    0.000    0.000    0.000
+ +  shift search range is +/- =   40.928   40.928   20.381
+++ OpenMP thread count = 15
+++ ========== Applying transformation to 1 sub-bricks ==========
+++ Output dataset ./zzerm.X20-84851.epiR.nii
+++ 3dAllineate: total CPU time = 0.0 sec  Elapsed = 0.4
+++ ###########################################################
+++ 3dMedianFilter: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Output dataset ./zzerm.X20-84851.epiRS.nii
+++ 3dedge3: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ 3dAutomask: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: Emperor Zhark
+++ 3dcalc: AFNI version=AFNI_22.2.12 (Sep 18 2022) [64-bit]
+++ Authored by: A cast of thousands
+++ Output dataset ./zzerm.X20-84851.epiEM.nii
+++ Start GUI to snapshot
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X20-84851.sag.jpg'
+++ Writing one 456x122 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X20-84851.cor.jpg'
+++ Writing one 456x152 image to filter '/AFNI/abin/cjpeg -quality 95 > zzerm.X20-84851.axi.jpg'
+
+AFNI QUITTs!
+@snapshot_volreg output image = ./sub-032178_anat_nsu_none.jpg
+
+scontrol show jobid 8259823
+JobId=8259823 JobName=ae-032178
+   UserId=afajardo(3121440) GroupId=mchakrav(6002763) MCS_label=N/A
+   Priority=2425402 Nice=0 Account=def-villens QOS=normal
+   JobState=COMPLETING Reason=None Dependency=(null)
+   Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0
+   RunTime=00:10:01 TimeLimit=01:00:00 TimeMin=N/A
+   SubmitTime=2022-10-06T14:48:57 EligibleTime=2022-10-06T14:48:57
+   AccrueTime=2022-10-06T14:48:57
+   StartTime=2022-10-06T14:49:36 EndTime=2022-10-06T14:59:37 Deadline=N/A
+   SuspendTime=None SecsPreSuspend=0 LastSchedEval=2022-10-06T14:49:36 Scheduler=Backfill
+   Partition=compute AllocNode:Sid=nia-login05:238257
+   ReqNodeList=(null) ExcNodeList=(null)
+   NodeList=nia0475
+   BatchHost=nia0475
+   NumNodes=1 NumCPUs=80 NumTasks=1 CPUs/Task=1 ReqB:S:C:T=0:0:*:*
+   TRES=cpu=80,mem=175000M,node=1,billing=40
+   Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=*
+   MinCPUsNode=1 MinMemoryNode=175000M MinTmpDiskNode=0
+   Features=[skylake|cascade] DelayBoot=00:00:00
+   OverSubscribe=NO Contiguous=0 Licenses=(null) Network=(null)
+   Command=/gpfs/fs0/scratch/m/mchakrav/afajardo/github/psilafni/code/site-oxford/align_epi2anat_sub-032178.batch
+   WorkDir=/gpfs/fs0/scratch/m/mchakrav/afajardo/github/psilafni/code/site-oxford
+   Comment=/opt/slurm/bin/sbatch --export=NONE align_epi2anat_sub-032178.batch 
+   StdErr=/gpfs/fs0/scratch/m/mchakrav/afajardo/github/psilafni/code/site-oxford/ae-032178
+   StdIn=/dev/null
+   StdOut=/gpfs/fs0/scratch/m/mchakrav/afajardo/github/psilafni/code/site-oxford/ae-032178
+   Power=
+   
+
+sacct -j 8259823
+JobID           JobName    Account    Elapsed  MaxVMSize     MaxRSS  SystemCPU    UserCPU ExitCode 
+------------ ---------- ---------- ---------- ---------- ---------- ---------- ---------- -------- 
+8259823       ae-032178 def-ville+   00:10:01                        00:44.378  47:23.608      0:0 
+8259823.bat+      batch def-ville+   00:10:01   1657100K    383292K  00:44.378  47:23.607      0:0 
+8259823.ext+     extern def-ville+   00:10:01    142384K      1124K   00:00:00   00:00:00      0:0 
+
+kernel messages produced during job executions:
+[Oct 6 14:46] TECH PREVIEW: Overlay filesystem may not be fully supported.
+Please review provided documentation for limitations.
+[  +0.039878] loop: module loaded
+[  +0.011980] squashfs: version 4.0 (2009/01/31) Phillip Lougher

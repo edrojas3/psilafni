@@ -1,0 +1,43 @@
+
+scontrol show jobid 8213196
+JobId=8213196 JobName=ap-032143
+   UserId=afajardo(3121440) GroupId=mchakrav(6002763) MCS_label=N/A
+   Priority=2159477 Nice=0 Account=rrg-mchakrav-ab QOS=normal
+   JobState=COMPLETING Reason=None Dependency=(null)
+   Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0
+   RunTime=00:13:10 TimeLimit=02:00:00 TimeMin=N/A
+   SubmitTime=2022-09-25T14:19:04 EligibleTime=2022-09-25T14:19:04
+   AccrueTime=2022-09-25T14:19:04
+   StartTime=2022-09-25T14:19:10 EndTime=2022-09-25T14:32:20 Deadline=N/A
+   SuspendTime=None SecsPreSuspend=0 LastSchedEval=2022-09-25T14:19:10 Scheduler=Backfill
+   Partition=compute AllocNode:Sid=nia-login01:95935
+   ReqNodeList=(null) ExcNodeList=(null)
+   NodeList=nia1556
+   BatchHost=nia1556
+   NumNodes=1 NumCPUs=80 NumTasks=1 CPUs/Task=1 ReqB:S:C:T=0:0:*:*
+   TRES=cpu=80,mem=175000M,node=1,billing=40
+   Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=*
+   MinCPUsNode=1 MinMemoryNode=175000M MinTmpDiskNode=0
+   Features=[skylake|cascade] DelayBoot=00:00:00
+   OverSubscribe=NO Contiguous=0 Licenses=(null) Network=(null)
+   Command=/gpfs/fs0/scratch/m/mchakrav/afajardo/github/psilafni/code/site-ucdavis/psilafni_proc_sub-032143.batch
+   WorkDir=/gpfs/fs0/scratch/m/mchakrav/afajardo/github/psilafni/code/site-ucdavis
+   Comment=/opt/slurm/bin/sbatch --export=NONE psilafni_proc_sub-032143.batch 
+   StdErr=/gpfs/fs0/scratch/m/mchakrav/afajardo/github/psilafni/code/site-ucdavis/ap-032143
+   StdIn=/dev/null
+   StdOut=/gpfs/fs0/scratch/m/mchakrav/afajardo/github/psilafni/code/site-ucdavis/ap-032143
+   Power=
+   
+
+sacct -j 8213196
+JobID           JobName    Account    Elapsed  MaxVMSize     MaxRSS  SystemCPU    UserCPU ExitCode 
+------------ ---------- ---------- ---------- ---------- ---------- ---------- ---------- -------- 
+8213196       ap-032143 rrg-mchak+   00:13:11                         00:00:00   00:00:00      0:0 
+8213196.bat+      batch rrg-mchak+   00:13:11                         00:00:00   00:00:00      0:0 
+8213196.ext+     extern rrg-mchak+   00:13:11                         00:00:00   00:00:00      0:0 
+
+kernel messages produced during job executions:
+[Sep25 12:48] TECH PREVIEW: Overlay filesystem may not be fully supported.
+Please review provided documentation for limitations.
+[  +0.037219] loop: module loaded
+[  +0.013756] squashfs: version 4.0 (2009/01/31) Phillip Lougher

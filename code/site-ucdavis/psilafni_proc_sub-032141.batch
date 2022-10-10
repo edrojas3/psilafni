@@ -1,0 +1,14 @@
+#!/bin/bash
+
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --time=2:00:00
+#SBATCH --job-name=ap-032141
+#SBATCH -o ap-032141
+
+module purge
+module singularity/3.8.0
+
+if [ -f ap-032141 ]; then rm ap-032141; fi
+sub=sub-032141
+singularity exec -B /scratch:/misc $home/containers/afni.sif /misc/m/mchakrav/afajardo/github/psilafni/code/site-ucdavis/psilafni_proc_${sub}.tcsh

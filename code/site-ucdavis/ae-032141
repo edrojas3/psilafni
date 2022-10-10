@@ -1,0 +1,37 @@
+
+scontrol show jobid 8213639
+JobId=8213639 JobName=sub-032141
+   UserId=afajardo(3121440) GroupId=mchakrav(6002763) MCS_label=N/A
+   Priority=2159493 Nice=0 Account=rrg-mchakrav-ab QOS=normal
+   JobState=COMPLETING Reason=None Dependency=(null)
+   Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0
+   RunTime=00:30:44 TimeLimit=01:00:00 TimeMin=N/A
+   SubmitTime=2022-09-25T15:30:42 EligibleTime=2022-09-25T15:30:42
+   AccrueTime=2022-09-25T15:30:42
+   StartTime=2022-09-25T15:31:02 EndTime=2022-09-25T16:01:46 Deadline=N/A
+   SuspendTime=None SecsPreSuspend=0 LastSchedEval=2022-09-25T15:31:02 Scheduler=Backfill
+   Partition=compute AllocNode:Sid=nia-login01:95935
+   ReqNodeList=(null) ExcNodeList=(null)
+   NodeList=nia0359
+   BatchHost=nia0359
+   NumNodes=1 NumCPUs=80 NumTasks=1 CPUs/Task=1 ReqB:S:C:T=0:0:*:*
+   TRES=cpu=80,mem=175000M,node=1,billing=40
+   Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=*
+   MinCPUsNode=1 MinMemoryNode=175000M MinTmpDiskNode=0
+   Features=[skylake|cascade] DelayBoot=00:00:00
+   OverSubscribe=NO Contiguous=0 Licenses=(null) Network=(null)
+   Command=/gpfs/fs0/scratch/m/mchakrav/afajardo/github/psilafni/code/site-ucdavis/align_epi2anat_sub-032141.batch
+   WorkDir=/gpfs/fs0/scratch/m/mchakrav/afajardo/github/psilafni/code/site-ucdavis
+   Comment=/opt/slurm/bin/sbatch --export=NONE align_epi2anat_sub-032141.batch 
+   StdErr=/gpfs/fs0/scratch/m/mchakrav/afajardo/github/psilafni/code/site-ucdavis/ae-032141
+   StdIn=/dev/null
+   StdOut=/gpfs/fs0/scratch/m/mchakrav/afajardo/github/psilafni/code/site-ucdavis/ae-032141
+   Power=
+   
+
+sacct -j 8213639
+JobID           JobName    Account    Elapsed  MaxVMSize     MaxRSS  SystemCPU    UserCPU ExitCode 
+------------ ---------- ---------- ---------- ---------- ---------- ---------- ---------- -------- 
+8213639      sub-032141 rrg-mchak+   00:30:44                        01:42.711   01:42:54      0:0 
+8213639.bat+      batch rrg-mchak+   00:30:44   3382220K   2242996K  01:42.711   01:42:54      0:0 
+8213639.ext+     extern rrg-mchak+   00:30:44    142384K       936K   00:00:00   00:00:00      0:0 

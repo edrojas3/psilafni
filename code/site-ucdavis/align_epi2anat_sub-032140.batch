@@ -1,0 +1,13 @@
+#!/bin/bash
+
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --time=1:00:00
+#SBATCH --job-name=sub-032140
+#SBATCH -o ae-%j
+
+module purge
+module singularity/3.8.0
+
+sub=sub-032140
+singularity exec -B /scratch:/misc $home/containers/afni.sif /misc/m/mchakrav/afajardo/github/psilafni/code/site-ucdavis/align_epi2anat_${sub}.tcsh

@@ -12,7 +12,7 @@
 # -------------------------------------------------
 
 # SET VARIABLES
-set subj      = sub-032133 
+set subj      = sub-032137 
 
 # IMPORTANT DIRECTORIES
 
@@ -25,7 +25,7 @@ set subj      = sub-032133
 ## Niagara
 set site      = /misc/m/mchakrav/afajardo/PRIME-DE/data/site-ucdavis # location of dataset
 set data_aw   = $site/data_aw/$subj # @animal_warper output directory
-set outdir    = $site/${subj}_test
+set outdir    = $site/data_ap/${subj}
 set refdir    = /misc/m/mchakrav/afajardo/atlases_and_templates/NMT_v2.0_sym/NMT_v2.0_sym_05mm # location of standard template
 
 # INPUT DATA
@@ -46,7 +46,7 @@ set cen_motion    = 0.3
 set cen_outliers  = 0.05
 
 set cmass        = nocmass
-set cost_func    = mi
+set cost_func    = lss
 set radcor_rad   = 14
 set feat_size    = 0.5
 set anat_unif    = none
@@ -91,7 +91,8 @@ afni_proc.py                                                                 \
 									  -smallrange                            \
 								      -source_automask+${automask_val}       \
 								      -maxshf 1.0                            \
-								      -maxscl 1.5                            \
+								      -maxscl 1.1                            \
+									  -maxshr 0.01 		                     \
     -tlrc_base                ${refvol}                                      \
     -tlrc_NL_warp                                                            \
     -tlrc_NL_warped_dsets     ${dsets_warp}									 \

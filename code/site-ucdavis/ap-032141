@@ -1,0 +1,43 @@
+
+scontrol show jobid 8222614
+JobId=8222614 JobName=ap-032141
+   UserId=afajardo(3121440) GroupId=mchakrav(6002763) MCS_label=N/A
+   Priority=5000015 Nice=0 Account=def-villens QOS=normal
+   JobState=COMPLETING Reason=None Dependency=(null)
+   Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0
+   RunTime=00:10:21 TimeLimit=02:00:00 TimeMin=N/A
+   SubmitTime=2022-09-26T21:32:54 EligibleTime=2022-09-26T21:32:54
+   AccrueTime=2022-09-26T21:32:54
+   StartTime=2022-09-26T21:33:00 EndTime=2022-09-26T21:43:21 Deadline=N/A
+   SuspendTime=None SecsPreSuspend=0 LastSchedEval=2022-09-26T21:33:00 Scheduler=Main
+   Partition=compute AllocNode:Sid=nia-login05:231467
+   ReqNodeList=(null) ExcNodeList=(null)
+   NodeList=nia0199
+   BatchHost=nia0199
+   NumNodes=1 NumCPUs=80 NumTasks=1 CPUs/Task=1 ReqB:S:C:T=0:0:*:*
+   TRES=cpu=80,mem=175000M,node=1,billing=40
+   Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=*
+   MinCPUsNode=1 MinMemoryNode=175000M MinTmpDiskNode=0
+   Features=[skylake|cascade] DelayBoot=00:00:00
+   OverSubscribe=NO Contiguous=0 Licenses=(null) Network=(null)
+   Command=/gpfs/fs0/scratch/m/mchakrav/afajardo/github/psilafni/code/site-ucdavis/psilafni_proc_sub-032141.batch
+   WorkDir=/gpfs/fs0/scratch/m/mchakrav/afajardo/github/psilafni/code/site-ucdavis
+   Comment=/opt/slurm/bin/sbatch --export=NONE psilafni_proc_sub-032141.batch 
+   StdErr=/gpfs/fs0/scratch/m/mchakrav/afajardo/github/psilafni/code/site-ucdavis/ap-032141
+   StdIn=/dev/null
+   StdOut=/gpfs/fs0/scratch/m/mchakrav/afajardo/github/psilafni/code/site-ucdavis/ap-032141
+   Power=
+   
+
+sacct -j 8222614
+JobID           JobName    Account    Elapsed  MaxVMSize     MaxRSS  SystemCPU    UserCPU ExitCode 
+------------ ---------- ---------- ---------- ---------- ---------- ---------- ---------- -------- 
+8222614       ap-032141 def-ville+   00:10:21                        01:17.696  37:03.573      0:0 
+8222614.bat+      batch def-ville+   00:10:21   5773900K   2300816K  01:17.696  37:03.572      0:0 
+8222614.ext+     extern def-ville+   00:10:21    142384K       936K   00:00:00   00:00:00      0:0 
+
+kernel messages produced during job executions:
+[Sep26 21:32] TECH PREVIEW: Overlay filesystem may not be fully supported.
+Please review provided documentation for limitations.
+[  +0.037735] loop: module loaded
+[  +0.010100] squashfs: version 4.0 (2009/01/31) Phillip Lougher
