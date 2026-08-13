@@ -1,12 +1,14 @@
 #!/bin/bash
 #SBATCH --job-name=aw_job           # Default job name (overridden at submission)
+#SBATCH --account=def-mchakrav-ab   # Account/Project allocation
 #SBATCH --nodes=1                   # AFNI processes a single subject per node
+#SBATCH --mem=16G		    # Allocated memory for the job
+#SBATCH --mail-user=faj.alf@gmail.com # Email to receive notification
 #SBATCH --cpus-per-task=8           # Allocated CPU cores for OpenMP parallelization
 #SBATCH --time=06:00:00             # Walltime limit (6 hours)
 #SBATCH --output=/scratch/afajardo/logs/%x_%j.out   # Standard output saved in /scratch
 #SBATCH --error=/scratch/afajardo/logs/%x_%j.err    # Standard error saved in /scratch
-#SBATCH --mail-user=faj.alf@gmail.com
-#SBATCH --mem=16G
+
 # ==============================================================================
 # INPUT ARGUMENTS AND PATHS
 # ==============================================================================
@@ -32,6 +34,7 @@ export APPTAINERENV_OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 echo "=================================================="
 echo " Job ID          : $SLURM_JOB_ID"
 echo " Job Name        : $SLURM_JOB_NAME"
+echo " Account         : def-mchakrav-ab"
 echo " Processing Subj : $SUBJ_ID"
 echo " Cores Allocated : $SLURM_CPUS_PER_TASK"
 echo " Site Directory  : $SITE_DIR"
