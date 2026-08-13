@@ -6,8 +6,8 @@
 #SBATCH --mail-user=faj.alf@gmail.com # Email to receive notification
 #SBATCH --cpus-per-task=8           # Allocated CPU cores for OpenMP parallelization
 #SBATCH --time=06:00:00             # Walltime limit (6 hours)
-#SBATCH --output=/scratch/afajardo/logs/%x_%j.out   # Standard output saved in /scratch
-#SBATCH --error=/scratch/afajardo/logs/%x_%j.err    # Standard error saved in /scratch
+#SBATCH --output=/project/rrg-mchakrav-ab/afajardo/PRIME-DE/logs/%x_%j.out   # Standard output saved in /scratch
+#SBATCH --error=/project/rrg-mchakrav-ab/afajardo/PRIME-DE/logs/%x_%j.err    # Standard error saved in /scratch
 
 # ==============================================================================
 # INPUT ARGUMENTS AND PATHS
