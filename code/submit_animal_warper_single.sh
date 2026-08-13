@@ -2,10 +2,10 @@
 #SBATCH --job-name=aw_job           # Default job name (overridden at submission)
 #SBATCH --nodes=1                   # AFNI processes a single subject per node
 #SBATCH --cpus-per-task=8           # Allocated CPU cores for OpenMP parallelization
-#SBATCH --time=12:00:00             # Walltime limit (6 hours)
+#SBATCH --time=06:00:00             # Walltime limit (6 hours)
 #SBATCH --output=/scratch/afajardo/logs/%x_%j.out   # Standard output saved in /scratch
 #SBATCH --error=/scratch/afajardo/logs/%x_%j.err    # Standard error saved in /scratch
-
+#SBATCH --mail.user=faj.alf@gmail.com
 # ==============================================================================
 # INPUT ARGUMENTS AND PATHS
 # ==============================================================================
