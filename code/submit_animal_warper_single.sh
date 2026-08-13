@@ -12,6 +12,14 @@
 # ==============================================================================
 # INPUT ARGUMENTS AND PATHS
 # ==============================================================================
+
+# Load the required modules
+
+module --force purge
+module load StdEnv/2023
+module load apptainer
+
+####
 SITE_DIR="$1"
 SUBJ_ID="$2"
 
