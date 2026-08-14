@@ -63,7 +63,7 @@ From: ubuntu:20.04
                           libnode-dev libudunits2-dev \
                           libgfortran4 ffmpeg wget python2
 
-    # Fix legacy GSL shared object symlink required by older AFNI binaries
+    # Fix legacy GSL shared object symlink required by AFNI binaries
     ln -s /usr/lib/x86_64-linux-gnu/libgsl.so.23 /usr/lib/x86_64-linux-gnu/libgsl.so.19
 
     # -------------------------------------------------------------------------
@@ -73,6 +73,9 @@ From: ubuntu:20.04
     mkdir -p /AFNI/R
     export R_LIBS=/AFNI/R
 
+    # Make AFNI binaries available inside %post build session to avoid wrapper errors
+    export PATH=/AFNI/abin:$PATH
+
     cd /AFNI
     touch .cshrc
     touch .bashrc
@@ -81,8 +84,8 @@ From: ubuntu:20.04
     curl -O https://afni.nimh.nih.gov/pub/dist/bin/misc/@update.afni.binaries
     tcsh @update.afni.binaries -package linux_ubuntu_16_64 -do_extras -bindir /AFNI/abin
 
-    # Update auto-completion database and documentation indices
-    /AFNI/abin/apsearch -update_all_afni_help
+    # Update auto-completion database and documentation indices (non-fatal)
+    apsearch -update_all_afni_help || true
 
     # -------------------------------------------------------------------------
     # R Packages for Statistical Modeling and Meta-Analysis
