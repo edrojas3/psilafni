@@ -1,27 +1,27 @@
 
 
 
+Bootstrap: docker
+From: ubuntu:20.04
+
 # ------------------------------- Copy the files ----------------------------
 %files
 
 *.nii.gz /opt
-
-# -----------set environmental variable to avoid user interaction--------------
-%environment
-DEBIAN_FRONTEND="noninteractive"
 
 # ----------------------- INSTALL DEPENDENCIES --------------------------------
 
 %post
 
   # ---------------- Set time zone --------------------------------------------
-  apt-get update && apt-get install -y tzdata  keyboard-configuration
+  export DEBIAN_FRONTEND="noninteractive"
+  apt-get update && apt-get install -y tzdata keyboard-configuration
 
   ln -sf /usr/share/zoneinfo/America/Mexico /etc/localtime
 
 
 
-#  --------------------------Lets install R first -----------------------------
+# --------------------------Lets install R first -----------------------------
 
 apt update -y && \
 apt install -y dirmngr gnupg apt-transport-https ca-certificates build-essential \
@@ -45,21 +45,21 @@ add-apt-repository -y "ppa:c2d4u.team/c2d4u4.0+"
   apt-get -y update && \
   apt-get install -y    nano  tcsh xfonts-base libssl-dev \
                         python-is-python3 python3-pip bc     \
-                        python3-matplotlib python3-numpy  \
-                        python3-scipy python3-pillow      \
+                        python3-matplotlib python3-numpy   \
+                        python3-scipy python3-pillow       \
                         gsl-bin netpbm gnome-tweak-tool   \
                         libjpeg62 xvfb xterm vim curl     \
-                        gedit evince eog                  \
+                        gedit evince eog                   \
                         libglu1-mesa-dev libglw1-mesa     \
-                        libxm4 build-essential            \
-                        libcurl4-openssl-dev libxml2-dev  \
-                        libgfortran-8-dev libgomp1        \
-                        gnome-terminal nautilus           \
-                        gnome-icon-theme-symbolic         \
-                        firefox xfonts-100dpi             \
+                        libxm4 build-essential             \
+                        libcurl4-openssl-dev libxml2-dev   \
+                        libgfortran-8-dev libgomp1         \
+                        gnome-terminal nautilus            \
+                        gnome-icon-theme-symbolic          \
+                        firefox xfonts-100dpi              \
                         r-base-dev cmake libgsl-dev       \
-                        libgdal-dev libopenblas-dev       \
-                        libnode-dev libudunits2-dev       \
+                        libgdal-dev libopenblas-dev        \
+                        libnode-dev libudunits2-dev        \
                         libgfortran4 ffmpeg wget python2
 
  #---------- create symbolic link for dependencies ----------------------------
@@ -85,7 +85,7 @@ ln -s /usr/lib/x86_64-linux-gnu/libgsl.so.23 /usr/lib/x86_64-linux-gnu/libgsl.so
   ${PWD}/abin
 
 
-# ------ TIME TO INSTALL R packages  ----------------------------------------
+# ------ TIME TO INSTALL R packages ----------------------------------------
 
 %post
 
@@ -101,16 +101,12 @@ Rscript -e "install.packages(c('afex','phia','snow','afex','paran','corrplot',\
 
 # -------------------------- post instalation----------------------------------
 
+echo "# auto-inserted by @update.afni.binaries :" >> /AFNI/.bashrc
+echo "export PATH=/AFNI/abin:\$PATH" >> /AFNI/.bashrc
 
-echo "# auto-inserted by @update.afni.binaries :
-echo "export PATH=/AFNI/abin:$PATH" >> /AFNI/.bashrc
-
-echo "# auto-inserted by @update.afni.binaries :
-# set up tab completion for AFNI programs
-echo "if [ -f /AFNI.afni/help/all_progs.COMP.bash ]
-then
-   source /AFNI.afni/help/all_progs.COMP.bash
-fi" >> /AFNI/.bashrc
+echo "# auto-inserted by @update.afni.binaries :" >> /AFNI/.bashrc
+echo "# set up tab completion for AFNI programs" >> /AFNI/.bashrc
+echo "if [ -f /AFNI.afni/help/all_progs.COMP.bash ]; then source /AFNI.afni/help/all_progs.COMP.bash; fi" >> /AFNI/.bashrc
 
 # ------------------------ Install NMT atlas ----------------------------------
 
@@ -122,8 +118,6 @@ tcsh /AFNI/abin/@Install_NMT -install_dir /AFNI -sym asym
 find /AFNI -name "NMT*.nii.gz" -exec cp {} /AFNI/abin \;
 
 # Dowload some files for sswarper
-
-
 
 mv /opt/*.nii.gz /AFNI/abin
 # -----------------------fix issue with matplotlib in python-------------------
@@ -144,40 +138,30 @@ rm getfsl.sh
 
 
 
-# ------- SOURCE THE ENVIRONMENT FOR AFNI----------------------------------------------
+# ------- SOURCE THE ENVIRONMENT (AFNI + FSL) ---------------------------------
 
 %environment
+    export DEBIAN_FRONTEND="noninteractive"
 
-# afni binaries
-#atlas directories
-export PATH='/AFNI/abin':$PATH
-export NMT_sym_dir='/AFNI/NMT_v2.1_sym/NMT_v2.1_sym_05mm'
-export NMT_asym_dir='/AFNI/NMT_v2.1_asym/NMT_v2.1_asym'
-export R_LIBS='/AFNI/R'
+    # AFNI & R
+    export AFNIDIR=/AFNI/abin
+    export NMT_sym_dir='/AFNI/NMT_v2.1_sym/NMT_v2.1_sym_05mm'
+    export NMT_asym_dir='/AFNI/NMT_v2.1_asym/NMT_v2.1_asym'
+    export R_LIBS='/AFNI/R'
 
-## ------ Set the Enviroment for FSL 
-
-%environment
+    # FSL
     export FSLDIR=/FSL
     export FSLOUTPUTTYPE=NIFTI_GZ
-    
-    # 1. Ejecutables wrapper de FSL preservando prioridad del sistema/AFNI
-    export PATH=/usr/local/bin:/usr/bin:/bin:${FSLDIR}/share/fsl/bin:$PATH
 
-    # 2. Carga de configuración interna de FSL
     if [ -f "${FSLDIR}/etc/fslconf/fsl.sh" ]; then
         . "${FSLDIR}/etc/fslconf/fsl.sh"
     fi
 
-#---- Make sure that FSL python will not interfere with python in AFNI
-
-%environment
-
-export PATH=/AFNI/abin:/usr/local/bin:/usr/bin:/bin:${FSLDIR}/share/fsl/bin:$PATH
+    # PATH BLINDADO: AFNI y Python del sistema al inicio, FSL wrappers al final
+    export PATH=/AFNI/abin:/usr/local/bin:/usr/bin:/bin:${FSLDIR}/share/fsl/bin:$PATH
 
 
-# ------------- Command to execute with  the container call -------------------
+# ------------- Command to execute with the container call -------------------
 %runscript
-
 
 afni -version
