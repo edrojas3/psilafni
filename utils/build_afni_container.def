@@ -1,74 +1,74 @@
-
-
-
 Bootstrap: docker
 From: ubuntu:20.04
 
-# ------------------------------- Copy the files ----------------------------
+# -----------------------------------------------------------------------------
+# Copy Local Files into Container
+# -----------------------------------------------------------------------------
 %files
+    *.nii.gz /opt
 
-*.nii.gz /opt
-
-# ----------------------- INSTALL DEPENDENCIES --------------------------------
-
+# -----------------------------------------------------------------------------
+# Installation & Configuration Stage
+# -----------------------------------------------------------------------------
 %post
 
-  # ---------------- Set time zone --------------------------------------------
-  export DEBIAN_FRONTEND="noninteractive"
-  apt-get update && apt-get install -y tzdata keyboard-configuration
+    # -------------------------------------------------------------------------
+    # Timezone & Locale Setup
+    # -------------------------------------------------------------------------
+    export DEBIAN_FRONTEND="noninteractive"
+    apt-get update && apt-get install -y tzdata keyboard-configuration locales
+    ln -sf /usr/share/zoneinfo/America/Mexico /etc/localtime
 
-  ln -sf /usr/share/zoneinfo/America/Mexico /etc/localtime
+    # Generate standard UTF-8 locales to prevent R/Perl encoding warnings
+    locale-gen en_US.UTF-8
+    update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 
+    # -------------------------------------------------------------------------
+    # Install R Base (CRAN 4.x Repository)
+    # -------------------------------------------------------------------------
+    apt-get update -y && \
+    apt-get install -y dirmngr gnupg apt-transport-https ca-certificates build-essential \
+    software-properties-common
 
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys \
+    E298A3A825C0D65DFD57CBB651716619E084DAB9
+    add-apt-repository -y 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/'
 
-# --------------------------Lets install R first -----------------------------
+    apt-get install -y r-base
 
-apt update -y && \
-apt install -y dirmngr gnupg apt-transport-https ca-certificates build-essential \
-software-properties-common
+    # -------------------------------------------------------------------------
+    # Core System & GUI Dependencies
+    # -------------------------------------------------------------------------
+    add-apt-repository -y universe
+    add-apt-repository -y "ppa:marutter/rrutter4.0"
+    add-apt-repository -y "ppa:c2d4u.team/c2d4u4.0+"
 
- apt-key adv --keyserver keyserver.ubuntu.com --recv-keys \
- E298A3A825C0D65DFD57CBB651716619E084DAB9
- add-apt-repository -y 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/'
+    apt-get -y update && \
+    apt-get install -y    nano tcsh xfonts-base libssl-dev \
+                          python-is-python3 python3-pip bc \
+                          python3-matplotlib python3-numpy \
+                          python3-scipy python3-pillow \
+                          gsl-bin netpbm gnome-tweak-tool \
+                          libjpeg62 xvfb xterm vim curl \
+                          gedit evince eog \
+                          libglu1-mesa-dev libglw1-mesa \
+                          libxm4 build-essential \
+                          libcurl4-openssl-dev libxml2-dev \
+                          libgfortran-8-dev libgomp1 \
+                          gnome-terminal nautilus \
+                          gnome-icon-theme-symbolic \
+                          firefox xfonts-100dpi \
+                          r-base-dev cmake libgsl-dev \
+                          libgdal-dev libopenblas-dev \
+                          libnode-dev libudunits2-dev \
+                          libgfortran4 ffmpeg wget python2
 
-apt install -y r-base
+    # Fix legacy GSL shared object symlink required by older AFNI binaries
+    ln -s /usr/lib/x86_64-linux-gnu/libgsl.so.23 /usr/lib/x86_64-linux-gnu/libgsl.so.19
 
-
-
-  # ----------------- Software dependencies------------------------------------
-
-%post
-add-apt-repository -y universe
-add-apt-repository -y "ppa:marutter/rrutter4.0"
-add-apt-repository -y "ppa:c2d4u.team/c2d4u4.0+"
-
-  apt-get -y update && \
-  apt-get install -y    nano  tcsh xfonts-base libssl-dev \
-                        python-is-python3 python3-pip bc     \
-                        python3-matplotlib python3-numpy   \
-                        python3-scipy python3-pillow       \
-                        gsl-bin netpbm gnome-tweak-tool   \
-                        libjpeg62 xvfb xterm vim curl     \
-                        gedit evince eog                   \
-                        libglu1-mesa-dev libglw1-mesa     \
-                        libxm4 build-essential             \
-                        libcurl4-openssl-dev libxml2-dev   \
-                        libgfortran-8-dev libgomp1         \
-                        gnome-terminal nautilus            \
-                        gnome-icon-theme-symbolic          \
-                        firefox xfonts-100dpi              \
-                        r-base-dev cmake libgsl-dev       \
-                        libgdal-dev libopenblas-dev        \
-                        libnode-dev libudunits2-dev        \
-                        libgfortran4 ffmpeg wget python2
-
- #---------- create symbolic link for dependencies ----------------------------
-%post
-ln -s /usr/lib/x86_64-linux-gnu/libgsl.so.23 /usr/lib/x86_64-linux-gnu/libgsl.so.19
-
-#----------------------- download and install afni binaries -------------------
-    # -------------- create directory for afni---------------
-
+    # -------------------------------------------------------------------------
+    # AFNI Installation
+    # -------------------------------------------------------------------------
     mkdir -p /AFNI/abin
     mkdir -p /AFNI/R
     export R_LIBS=/AFNI/R
@@ -77,79 +77,69 @@ ln -s /usr/lib/x86_64-linux-gnu/libgsl.so.23 /usr/lib/x86_64-linux-gnu/libgsl.so
     touch .cshrc
     touch .bashrc
 
-  #-------------- Download AFNI binaries --------------------------------------
-  curl -O https://afni.nimh.nih.gov/pub/dist/bin/misc/@update.afni.binaries
+    # Download and unpack official AFNI precompiled binaries
+    curl -O https://afni.nimh.nih.gov/pub/dist/bin/misc/@update.afni.binaries
+    tcsh @update.afni.binaries -package linux_ubuntu_16_64 -do_extras -bindir /AFNI/abin
 
-  # install AFNI
-  tcsh @update.afni.binaries -package linux_ubuntu_16_64 -do_extras -bindir \
-  ${PWD}/abin
+    # Update auto-completion database and documentation indices
+    /AFNI/abin/apsearch -update_all_afni_help
 
+    # -------------------------------------------------------------------------
+    # R Packages for Statistical Modeling and Meta-Analysis
+    # -------------------------------------------------------------------------
+    Rscript -e "install.packages(c('Rcpp','brms'), dependencies = TRUE, INSTALL_opts = '--no-lock')"
 
-# ------ TIME TO INSTALL R packages ----------------------------------------
+    # Install AFNI-compatible and psychometric modeling libraries (including psych)
+    Rscript -e "install.packages(c('afex','phia','snow','paran','corrplot',\
+      'metafor', 'shiny', 'circos','nlme','lmerTest','psych'))"
 
-%post
+    # -------------------------------------------------------------------------
+    # NMT (NIMH Macaque Template) v2.1 Atlases & Follower Templates
+    # -------------------------------------------------------------------------
+    tcsh /AFNI/abin/@Install_NMT -install_dir /AFNI -sym sym
+    tcsh /AFNI/abin/@Install_NMT -install_dir /AFNI -sym asym
 
-Rscript -e "install.packages(c('Rcpp','brms'), dependencies = TRUE, \
-INSTALL_opts = '--no-lock')"
+    # Copy NMT templates directly into AFNI binary directory
+    find /AFNI -name "NMT*.nii.gz" -exec cp {} /AFNI/abin \;
 
-Rscript -e "install.packages(c('afex','phia','snow','afex','paran','corrplot',\
-  'metafor', 'shiny', 'circos','nlme','lmerTest','pysch'))"
+    # Relocate auxiliary templates injected via %files (e.g. for @SSwarper / @animal_warper)
+    mv /opt/*.nii.gz /AFNI/abin 2>/dev/null || true
 
+    # -------------------------------------------------------------------------
+    # System Python Environment for AFNI & QC HTML Reports
+    # -------------------------------------------------------------------------
+    update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 
+    # Scientific stack + Flask/Flask-CORS required by afni_proc.py QC web visualizers
+    python -m pip install --no-cache-dir -U matplotlib scipy numpy pillow flask flask_cors
 
-
-
-# -------------------------- post instalation----------------------------------
-
-echo "# auto-inserted by @update.afni.binaries :" >> /AFNI/.bashrc
-echo "export PATH=/AFNI/abin:\$PATH" >> /AFNI/.bashrc
-
-echo "# auto-inserted by @update.afni.binaries :" >> /AFNI/.bashrc
-echo "# set up tab completion for AFNI programs" >> /AFNI/.bashrc
-echo "if [ -f /AFNI.afni/help/all_progs.COMP.bash ]; then source /AFNI.afni/help/all_progs.COMP.bash; fi" >> /AFNI/.bashrc
-
-# ------------------------ Install NMT atlas ----------------------------------
-
-tcsh /AFNI/abin/@Install_NMT -install_dir /AFNI -sym sym
-tcsh /AFNI/abin/@Install_NMT -install_dir /AFNI -sym asym
-
-# copy the NNT templates to the abin folder
-
-find /AFNI -name "NMT*.nii.gz" -exec cp {} /AFNI/abin \;
-
-# Dowload some files for sswarper
-
-mv /opt/*.nii.gz /AFNI/abin
-# -----------------------fix issue with matplotlib in python-------------------
-
-update-alternatives --install /usr/bin/python python /usr/bin/python3 1
-
-python -m pip install -U matplotlib scipy numpy pillow
+    # -------------------------------------------------------------------------
+    # FSL Installation (Official Installer)
+    # -------------------------------------------------------------------------
+    curl -Ls https://fsl.fmrib.ox.ac.uk/fsldownloads/fslconda/releases/getfsl.sh > getfsl.sh
+    sh getfsl.sh /FSL
+    rm -f getfsl.sh
 
 
-## ---------NOW install FSL------------
-
-%post
-
-curl -Ls https://fsl.fmrib.ox.ac.uk/fsldownloads/fslconda/releases/getfsl.sh > getfsl.sh
-
-sh getfsl.sh /FSL
-rm getfsl.sh
-
-
-
-# ------- SOURCE THE ENVIRONMENT (AFNI + FSL) ---------------------------------
-
+# -----------------------------------------------------------------------------
+# Runtime Environment Setup (AFNI + FSL Coexistence)
+# -----------------------------------------------------------------------------
 %environment
     export DEBIAN_FRONTEND="noninteractive"
+    export LANG=en_US.UTF-8
+    export LC_ALL=en_US.UTF-8
 
-    # AFNI & R
+    # -------------------------------------------------------------------------
+    # 1. AFNI, Templates & R Paths
+    # -------------------------------------------------------------------------
     export AFNIDIR=/AFNI/abin
     export NMT_sym_dir='/AFNI/NMT_v2.1_sym/NMT_v2.1_sym_05mm'
     export NMT_asym_dir='/AFNI/NMT_v2.1_asym/NMT_v2.1_asym'
     export R_LIBS='/AFNI/R'
 
-    # FSL
+    # -------------------------------------------------------------------------
+    # 2. FSL Configuration
+    # -------------------------------------------------------------------------
     export FSLDIR=/FSL
     export FSLOUTPUTTYPE=NIFTI_GZ
 
@@ -157,11 +147,17 @@ rm getfsl.sh
         . "${FSLDIR}/etc/fslconf/fsl.sh"
     fi
 
-    # PATH BLINDADO: AFNI y Python del sistema al inicio, FSL wrappers al final
+    # -------------------------------------------------------------------------
+    # 3. Path Precedence (Strict Python Isolation)
+    # -------------------------------------------------------------------------
+    # AFNI and System Python (/usr/bin) take precedence at the front.
+    # ONLY FSL wrappers (${FSLDIR}/share/fsl/bin) are added to PATH.
+    # Never add ${FSLDIR}/bin here to prevent FSL Conda from hijacking Python.
     export PATH=/AFNI/abin:/usr/local/bin:/usr/bin:/bin:${FSLDIR}/share/fsl/bin:$PATH
 
 
-# ------------- Command to execute with the container call -------------------
+# -----------------------------------------------------------------------------
+# Container Entrypoint / Default Execution
+# -----------------------------------------------------------------------------
 %runscript
-
-afni -version
+    afni -version
