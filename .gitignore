@@ -2,3 +2,4 @@
 *logs
 afni_sandbox
 tmp*
+*.token

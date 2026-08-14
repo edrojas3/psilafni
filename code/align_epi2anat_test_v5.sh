@@ -25,8 +25,8 @@ Description:
     - Auto-detects all 'ses-*' directories (or runs single-session if no 'ses-*').
     - Pairs session-specific @animal_warper anatomy (_nsu).
     - Summarizes all session inputs (Anat, Func, Fieldmaps) for debugging.
-    - Conditionally calculates B0 unwarping via FSL + AFNI and outputs a clean
-      'fmap_warp_FINAL_<subj>_<ses>+orig' for direct inclusion in afni_proc.py.
+    - Conditionally calculates B0 unwarping via FSL + AFNI without 3dSkullStrip,
+      saving 'fmap_warp_FINAL_<subj>_<ses>+orig' for direct use in afni_proc.py.
     - Runs 'align_epi_anat.py' with -multi_cost.
     - Saves a full terminal log inside each session folder via 'tee'.
     - Generates edge QC snapshots per cost function.
@@ -296,7 +296,7 @@ for ses in "${sessions[@]}"; do
         if [ -n "$fmap_mag" ] && [ -n "$fmap_phase" ]; then
             echo "[ACTION] Full fieldmap pair present. Executing B0 distortion correction..."
 
-            # 1. Delta TE calculation (milisegundos para FSL)
+            # 1. Delta TE calculation (ms para FSL)
             delta_te_ms="2.46"
             if [ -f "$fmap_json" ]; then
                 parsed_dte=$(python3 -c "
@@ -313,7 +313,7 @@ except Exception:
             fi
             echo "       - Delta TE  : $delta_te_ms ms"
 
-            # 2. AFNI: Extraer máscara cerebral de la magnitud
+            # 2. AFNI: Extraer máscara cerebral de la magnitud usando 3dAutomask (Sin modelos humanos)
             3dcopy "$fmap_mag" ./fmap_mag.nii.gz -overwrite
             3dAutomask -prefix fmap_mag_mask.nii.gz -overwrite ./fmap_mag.nii.gz
             3dcalc -a ./fmap_mag.nii.gz -b fmap_mag_mask.nii.gz \
@@ -329,12 +329,14 @@ except Exception:
                 "$delta_te_ms"
 
             if [ -f "fmap_rads.nii.gz" ]; then
-                # 4. AFNI: Alinear magnitud al EPI base
+                # 4. AFNI: Alinear magnitud al EPI base (SIN 3dSkullStrip)
                 align_epi_anat.py \
                     -dset1 vr_base_min_outlier+orig \
                     -dset2 fmap_mag_brain.nii.gz \
                     -dset2to1 \
                     -child_dset2 fmap_rads.nii.gz \
+                    -dset1_strip 3dAutomask \
+                    -dset2_strip None \
                     -cost nmi \
                     -rigid_body \
                     -overwrite
@@ -374,7 +376,7 @@ except Exception:
         fi
 
         # ----------------------------------------------------------------------
-        # STEP 3: MULTI-COST ALIGNMENT TEST
+        # STEP 3: MULTI-COST ALIGNMENT TEST (SIN 3dSkullStrip)
         # ----------------------------------------------------------------------
         echo -e "\n>>> [STEP 3] Running align_epi_anat.py with -multi_cost on $epi_target..."
 
