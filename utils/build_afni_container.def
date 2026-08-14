@@ -1,5 +1,4 @@
-Bootstrap: docker
-From: ubuntu:20.04
+
 
 
 # ------------------------------- Copy the files ----------------------------
@@ -133,7 +132,19 @@ update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 
 python -m pip install -U matplotlib scipy numpy pillow
 
-# ------- SOURCE THE ENVIRONMENT----------------------------------------------
+
+## ---------NOW install FSL------------
+
+%post
+
+curl -Ls https://fsl.fmrib.ox.ac.uk/fsldownloads/fslconda/releases/getfsl.sh > getfsl.sh
+
+sh getfsl.sh /FSL
+rm getfsl.sh
+
+
+
+# ------- SOURCE THE ENVIRONMENT FOR AFNI----------------------------------------------
 
 %environment
 
@@ -143,6 +154,27 @@ export PATH='/AFNI/abin':$PATH
 export NMT_sym_dir='/AFNI/NMT_v2.1_sym/NMT_v2.1_sym_05mm'
 export NMT_asym_dir='/AFNI/NMT_v2.1_asym/NMT_v2.1_asym'
 export R_LIBS='/AFNI/R'
+
+## ------ Set the Enviroment for FSL 
+
+%environment
+    export FSLDIR=/FSL
+    export FSLOUTPUTTYPE=NIFTI_GZ
+    
+    # 1. Ejecutables wrapper de FSL preservando prioridad del sistema/AFNI
+    export PATH=/usr/local/bin:/usr/bin:/bin:${FSLDIR}/share/fsl/bin:$PATH
+
+    # 2. Carga de configuración interna de FSL
+    if [ -f "${FSLDIR}/etc/fslconf/fsl.sh" ]; then
+        . "${FSLDIR}/etc/fslconf/fsl.sh"
+    fi
+
+#---- Make sure that FSL python will not interfere with python in AFNI
+
+%environment
+
+export PATH=/AFNI/abin:/usr/local/bin:/usr/bin:/bin:${FSLDIR}/share/fsl/bin:$PATH
+
 
 # ------------- Command to execute with  the container call -------------------
 %runscript
