@@ -2,8 +2,8 @@
 
 # ==============================================================================
 # Script Name : prep_fieldmaps.sh
-# Description : Independent BIDS Fieldmap Preprocessing Script for Non-Human Primates.
-#               Computes absolute B0 field maps using FSL (prelude, fugue) and AFNI.
+# Description : Robust BIDS Fieldmap Preprocessing Script for Non-Human Primates.
+#               Computes absolute B0 field maps using FSL (prelude, fslmaths) and AFNI.
 #               Outputs results to a centralized folder inside the dataset directory (-d).
 # Usage       : ./prep_fieldmaps.sh -d <dataset_directory> -s <subject_id>
 # ==============================================================================
@@ -43,26 +43,55 @@ process_fieldmap_session() {
     temp_dir=$(mktemp -d)
     pushd "$temp_dir" > /dev/null
 
-    # 1. Extract Delta TE dynamically from the JSON sidecar file using Python
+    # 1. Extract Delta TE dynamically from JSON or fallback to standard 2.46ms for Siemens 3T
     echo "==> [HELPER] Step 1: Extracting Delta TE from JSON metadata..."
     local delta_te
-    delta_te=$(python3 -c "import json; data=json.load(open('$json_file')); print(round(data['EchoTime2'] - data['EchoTime1'], 6))")
-    echo "    Detected Delta TE: $delta_te seconds"
+    delta_te=$(python3 -c "
+import json
+try:
+    with open('$json_file') as f:
+        d = json.load(f)
+    te1 = float(d.get('EchoTime1'))
+    te2 = float(d.get('EchoTime2'))
+    dte = abs(te2 - te1)
+    if dte == 0:
+        raise ValueError
+    print(f'{dte:.6f}')
+except Exception:
+    # Fallback para 'N/A', campos faltantes o valores no numericos (Siemens 3T standard)
+    print('0.00246')
+")
+    echo "    Detected/Assigned Delta TE: $delta_te seconds"
 
-    # 2. Convert raw Siemens phasediff integers [0, 4094] to physical radians [-pi, +pi]
-    echo "==> [HELPER] Step 2: Converting raw phase to radians [-pi, +pi]..."
+    # 2. Dynamic Phasediff scaling strictly to [-pi, +pi] range (6.283185 rad total span)
+    echo "==> [HELPER] Step 2: Dynamically converting raw phase to radians [-pi, +pi]..."
+    local min_val max_val
+    min_val=$(3dBrickStat -min "$phase_file" | tr -d '[:space:]')
+    max_val=$(3dBrickStat -max "$phase_file" | tr -d '[:space:]')
+    echo "    Raw phase range detected: [$min_val, $max_val]"
+
+    # Seguridad contra imágenes planas
+    if (( $(echo "$max_val == $min_val" | bc -l) )); then
+        echo "[ERROR] Phasediff file has zero variance (flat image). Skipping."
+        popd > /dev/null
+        rm -rf "$temp_dir"
+        return 1
+    fi
+
     3dcalc -a "$phase_file" \
-           -expr '(a * 0.0015339808) - 3.14159265' \
+           -expr "((a - (${min_val})) / (${max_val} - (${min_val})) * 6.2831853) - 3.14159265" \
+           -datum float \
            -prefix phasediff_rad.nii.gz \
            -overwrite > /dev/null 2>&1
 
-    # 3. Generate a clean tissue mask from the magnitude image
+    # 3. Generate tissue mask from magnitude image (Dilated to avoid boundary truncations)
     echo "==> [HELPER] Step 3: Generating clean brain/tissue mask from magnitude..."
-    3dAutomask -prefix fmap_mag_mask.nii.gz -clfrac 0.58 -overwrite "$mag_file" > /dev/null 2>&1
+    3dAutomask -prefix fmap_mag_mask.nii.gz -clfrac 0.50 -overwrite "$mag_file" > /dev/null 2>&1
+    
     3dmask_tool -input fmap_mag_mask.nii.gz \
                 -prefix fmap_mag_mask_clean.nii.gz \
                 -fill_holes \
-                -dilate_inputs -1 \
+                -dilate_inputs 1 \
                 -overwrite > /dev/null 2>&1
     
     3dcalc -a "$mag_file" \
@@ -127,7 +156,7 @@ if [ -z "$DATASET_DIR" ] || [ -z "$SUBJ_ID" ]; then
 fi
 
 echo "=================================================="
-echo "++ Independent Fieldmap Prep Pipeline Started"
+echo "++ Robust Fieldmap Prep Pipeline Started"
 echo "++ Dataset Directory : $DATASET_DIR"
 echo "++ Subject ID        : $SUBJ_ID"
 echo "=================================================="
@@ -176,11 +205,11 @@ for ses_path in $sessions; do
     echo "++ Phasediff file found : $(basename "$phase_file")"
     echo "++ JSON sidecar found   : $(basename "$json_file")"
 
-    # Define centralized output directory directly inside the dataset path under a unified folder
+    # Centralized output directory
     CENTRAL_OUTPUT_ROOT="${DATASET_DIR}/fieldmaps_prepared_all"
     OUT_FMAP_DIR="${CENTRAL_OUTPUT_ROOT}/${SUBJ_ID}/${ses_name}/fmap_prepared"
 
-    # Call the helper function to execute the preprocessing steps
+    # Execute session processing
     process_fieldmap_session "$mag_file" "$phase_file" "$json_file" "$OUT_FMAP_DIR"
 
 done
