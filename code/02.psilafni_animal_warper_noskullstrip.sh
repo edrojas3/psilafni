@@ -183,7 +183,7 @@ for subj_anat in "${boxed_anat_files[@]}"; do
       -base_abbrev NMT_v2.1_sym \
       -atlas_followers "${refdir}/CHARM_in_NMT_v2.1_sym_05mm.nii.gz" "${refdir}/D99_atlas_in_NMT_v2.1_sym_05mm.nii.gz" \
       -atlas_abbrevs CHARM D99 \
-      -no_skullstrip \
+      -skullstrip ${refdir}/NMT_v2.1_sym_brainmask.nii.gz \
       -seg_followers "${refdir}/NMT_v2.1_sym_05mm_segmentation.nii.gz" "${refdir}/supplemental_masks/NMT_v2.1_sym_05mm_ventricles.nii.gz" \
       -seg_abbrevs SEG VENT \
       -outdir "$outdir" \
