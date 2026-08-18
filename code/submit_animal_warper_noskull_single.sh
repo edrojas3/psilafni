@@ -1,0 +1,66 @@
+#!/bin/bash
+#SBATCH --job-name=aw_job           # Default job name (overridden at submission)
+#SBATCH --account=def-mchakrav-ab   # Account/Project allocation
+#SBATCH --nodes=1                   # AFNI processes a single subject per node
+#SBATCH --mem=16G		    # Allocated memory for the job
+#SBATCH --mail-user=faj.alf@gmail.com # Email to receive notification
+#SBATCH --cpus-per-task=4           # Allocated CPU cores for OpenMP parallelization
+#SBATCH --time=12:00:00             # Walltime limit (6 hours)
+#SBATCH --output=/project/rrg-mchakrav-ab/afajardo/PRIME-DE/logs/%x_%j.out   # Standard output saved in /scratch
+#SBATCH --error=/project/rrg-mchakrav-ab/afajardo/PRIME-DE/logs/%x_%j.err    # Standard error saved in /scratch
+
+# ==============================================================================
+# INPUT ARGUMENTS AND PATHS
+# ==============================================================================
+
+# Load the required modules
+
+module --force purge
+module load StdEnv/2023
+module load apptainer
+
+####
+SITE_DIR="$1"
+SUBJ_ID="$2"
+
+CONTAINER="/project/rrg-mchakrav-ab/afajardo/containers/afni.sif"
+ANIMAL_WARPER="/project/rrg-mchakrav-ab/afajardo/github/psilafni/code/02.psilafni_animal_warper_noskullstrip.sh"
+
+# Validate required input parameters
+if [ -z "$SITE_DIR" ] || [ -z "$SUBJ_ID" ]; then
+    echo "[ERROR] Missing required arguments!"
+    echo "Usage: sbatch --job-name=<subject_id> $0 <site_dir_path> <subject_id>"
+    exit 1
+fi
+
+# Ensure scratch logs directory exists
+mkdir -p /scratch/afajardo/logs
+
+# Optimize AFNI / OpenMP multithreading inside Apptainer
+export APPTAINERENV_OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
+
+echo "=================================================="
+echo " Job ID          : $SLURM_JOB_ID"
+echo " Job Name        : $SLURM_JOB_NAME"
+echo " Account         : def-mchakrav-ab"
+echo " Processing Subj : $SUBJ_ID"
+echo " Cores Allocated : $SLURM_CPUS_PER_TASK"
+echo " Site Directory  : $SITE_DIR"
+echo " Container       : $CONTAINER"
+echo " Script          : $ANIMAL_WARPER"
+echo " Logs Path       : /scratch/afajardo/logs/"
+echo "=================================================="
+
+# ==============================================================================
+# APPTAINER EXECUTION
+# ==============================================================================
+apptainer exec -C -B "$PWD:$PWD" -B /scratch/afajardo:/scratch/afajardo "$CONTAINER" "$ANIMAL_WARPER" -d "$SITE_DIR" -s "$SUBJ_ID"
+
+STATUS=$?
+if [ $STATUS -eq 0 ]; then
+    echo "++ [SUCCESS] Completed processing for $SUBJ_ID"
+else
+    echo "-- [ERROR] Processing failed for $SUBJ_ID (Exit code $STATUS)"
+fi
+
+exit $STATUS
