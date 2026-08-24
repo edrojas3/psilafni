@@ -1,6 +1,6 @@
 #!/bin/bash
 # ==============================================================================
-# Script Name : prepared_alignment_metrics.sh
+# Script Name : get_alignment_metrics.sh
 # Language    : BASH
 # Description : Audits BIDS site subjects, filters the optimal anatomical run
 #               and cost function per functional session, resolves fieldmap

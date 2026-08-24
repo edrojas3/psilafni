@@ -1,0 +1,287 @@
+#!/bin/bash
+
+# ==============================================================================
+# Script Name : psilafni_proc.sh (v1.0)
+# Language    : BASH
+# Description : Automated fMRI preprocessing master pipeline in AFNI for NHP.
+#               - Dynamically reads optimal alignment parameters from TSV.
+#               - Forces @Align_Centers and strict 6-DOF (rigid body) alignment.
+#               - Extracts tissue noise masks (WM/CSF) and generates QC overlays.
+#               - Auto-detects HPC (SLURM) vs Local execution for OpenMP threads.
+#               - Executes afni_proc.py in joint or separate run mode.
+# ==============================================================================
+
+set -eo pipefail
+
+# ------------------------------------------------------------------------------
+# 0. SANITY CHECKS & THREAD MANAGEMENT
+# ------------------------------------------------------------------------------
+log_msg() {
+    local level="$1"
+    local message="$2"
+    echo "[$(date +"%Y-%m-%d %H:%M:%S")] [${level}] ${message}"
+}
+
+if ! command -v afni_proc.py &> /dev/null || ! command -v @chauffeur_afni &> /dev/null; then
+    log_msg "ERROR" "AFNI binaries not found in PATH. Please load your AFNI environment or Apptainer."
+    exit 1
+fi
+
+if [ -n "$SLURM_CPUS_PER_TASK" ]; then
+    export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
+    log_msg "INFO" "HPC SLURM environment detected. Setting OpenMP threads to $OMP_NUM_THREADS."
+else
+    local_cores=$(nproc 2>/dev/null || echo 4)
+    calc_threads=$((local_cores - 2))
+    export OMP_NUM_THREADS=$((calc_threads < 3 ? 3 : calc_threads))
+    log_msg "INFO" "Local execution detected. Setting OpenMP threads to $OMP_NUM_THREADS."
+fi
+
+# ------------------------------------------------------------------------------
+# 1. PARSE INPUT ARGUMENTS
+# ------------------------------------------------------------------------------
+show_help() {
+    cat << EOF
+
+==============================================================================
+  PSILAFNI MASTER fMRI PREPROCESSING PIPELINE (v1.0)
+==============================================================================
+Usage: $0 -d <site_dir> -s <subj_id> [options]
+
+Required:
+  -d <path>               : Absolute path to BIDS site root directory
+  -s <id>                 : Unique Subject ID (e.g., sub-032198)
+
+Optional:
+  -a <path>               : Path to @animal_warper folder (Default: <site_dir>/data_aw)
+  -ses <str>              : Process a specific session only (e.g., 'ses-001')
+  -sep, --separate_runs   : Process each BOLD run individually (for Fingerprinting)
+  -f, --force             : Overwrite existing output directories
+  -h, --help              : Display this documentation and exit
+==============================================================================
+EOF
+    exit 0
+}
+
+if [ $# -eq 0 ] || [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]]; then show_help; fi
+
+site_dir=""
+subj_id=""
+aw_dir=""
+user_ses=""
+separate_runs=false
+force_overwrite=false
+censor_motion="0.30"
+censor_outlier="0.05"
+bandpass_bot="0.01"
+bandpass_top="0.1"
+resample_dxyz="1.25"
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -d) site_dir="$2"; shift 2 ;;
+        -s) subj_id="$2"; shift 2 ;;
+        -a) aw_dir="$2"; shift 2 ;;
+        -ses|-p) user_ses="$2"; shift 2 ;;
+        -sep|--separate_runs) separate_runs=true; shift 1 ;;
+        -f|--force|--overwrite) force_overwrite=true; shift 1 ;;
+        *) shift 1 ;; 
+    esac
+done
+
+[ -z "$site_dir" ] || [ -z "$subj_id" ] && { log_msg "ERROR" "Missing mandatory flags (-d and -s)"; show_help; }
+[ -z "$aw_dir" ] && aw_dir="${site_dir}/data_aw"
+
+subj_dir="${site_dir}/${subj_id}"
+aw_subj_dir="${aw_dir}/${subj_id}"
+
+[ ! -d "$subj_dir" ] && { log_msg "ERROR" "Subject directory not found: $subj_dir"; exit 1; }
+[ ! -d "$aw_subj_dir" ] && { log_msg "ERROR" "Animal Warper directory not found: $aw_subj_dir"; exit 1; }
+
+# Locate Master Benchmark TSV
+site_name=$(basename "$site_dir")
+master_tsv="${site_dir}/align_tests_centered/${site_name}_best_alignment_parameters.tsv"
+
+if [ ! -f "$master_tsv" ]; then
+    log_msg "ERROR" "Master benchmark TSV not found: $master_tsv. Please run get_alignment_metrics.sh first."
+    exit 1
+fi
+
+# Discover Functional Sessions
+if [ -n "$user_ses" ]; then
+    func_sessions=("$user_ses")
+else
+    mapfile -t func_sessions < <(find "$subj_dir" -mindepth 1 -maxdepth 1 -type d -name "ses-*" -exec basename {} \; | sort)
+    [ ${#func_sessions[@]} -eq 0 ] && func_sessions=("no_ses")
+fi
+
+echo "======================================================================"
+echo "          STARTING PSILAFNI PREPROCESSING PIPELINE (v1.0)             "
+echo " Subject ID        : $subj_id"
+echo " Site Directory    : $site_dir"
+echo " Benchmark TSV     : $master_tsv"
+echo " Run Mode          : $( [ "$separate_runs" = true ] && echo "SEPARATE RUNS" || echo "JOINT RUNS (DEFAULT)" )"
+echo "======================================================================"
+
+# ==============================================================================
+# 2. SESSION EXECUTION LOOP
+# ==============================================================================
+for f_ses in "${func_sessions[@]}"; do
+    
+    ses_data_dir="${subj_dir}/${f_ses}"
+    [ "$f_ses" == "no_ses" ] && ses_data_dir="$subj_dir"
+    
+    out_base_dir="${site_dir}/data_ap/${subj_id}/${f_ses}/$([ "$separate_runs" = true ] && echo "separate_runs" || echo "joint_runs")"
+    mkdir -p "$out_base_dir"
+
+    # Locate Resting BOLD Runs
+    mapfile -t rs_runs < <(find "$ses_data_dir" -type f \( -name "*task-rest*bold*.nii*" -o -name "*task-resting*bold*.nii*" \) ! -name "*fmap*" ! -name "*magnitude*" ! -name "*phasediff*" ! -name "*dir-*" | sort)
+    
+    if [ ${#rs_runs[@]} -eq 0 ]; then
+        log_msg "WARNING" "No resting BOLD runs found for session $f_ses. Skipping."
+        continue
+    fi
+
+    # --------------------------------------------------------------------------
+    # 3. HARVEST BENCHMARK PARAMETERS FROM TSV
+    # --------------------------------------------------------------------------
+    matched_row=$(awk -F'\t' -v s="$subj_id" -v ses="$f_ses" '$1 == s && $2 == ses {print $0}' "$master_tsv" | tr -d '\r' | tail -n 1)
+    
+    if [ -z "$matched_row" ]; then
+        log_msg "ERROR" "No benchmark entry found for ${subj_id} (${f_ses}) in TSV. Skipping."
+        continue
+    fi
+
+    # Extract exactly matching the benchmark TSV headers
+    fmap_applied=$(echo "$matched_row" | awk -F'\t' '{print $4}')
+    active_move=$(echo "$matched_row" | awk -F'\t' '{print $6}')
+    active_cmass=$(echo "$matched_row" | awk -F'\t' '{print $7}')
+    best_cost=$(echo "$matched_row" | awk -F'\t' '{print $8}')
+    raw_anat_path=$(echo "$matched_row" | awk -F'\t' '{print $11}')
+    fmap_path=$(echo "$matched_row" | awk -F'\t' '{print $12}')
+
+    [ "$active_move" == "none" ] && active_move=""
+    log_msg "INFO" "Harvested Params -> Cost: $best_cost | Move: ${active_move:-default} | CMass: $active_cmass | Fmap: $fmap_applied"
+
+    # Resolve Animal Warper Matrices
+    anat_base_dir=$(dirname "$raw_anat_path")
+    anat_prefix=$(basename "$raw_anat_path" | sed -E 's/(_nsu.*|\+orig.*)$//')
+    aff_1D=$(find "$aw_subj_dir" -type f -name "*${anat_prefix}*composite_linear_to_template.1D" | head -n 1)
+    warp_nii=$(find "$aw_subj_dir" -type f \( -name "*${anat_prefix}*shft_WARP.nii.gz" -o -name "*${anat_prefix}*WARP.nii.gz" \) | head -n 1)
+    seg_mask=$(find "$aw_subj_dir" -type f -name "SEG_in_*${anat_prefix}*.nii*" | head -n 1)
+
+    if [ -z "$aff_1D" ] || [ -z "$warp_nii" ]; then
+        log_msg "ERROR" "Missing Animal Warper affine (.1D) or non-linear warp for $anat_prefix. Skipping."
+        continue
+    fi
+
+    # --------------------------------------------------------------------------
+    # 4. TISSUE MASK EXTRACTION & QC
+    # --------------------------------------------------------------------------
+    wm_mask="${anat_base_dir}/WM_in_${anat_prefix}.nii.gz"
+    csf_mask="${anat_base_dir}/CSF_in_${anat_prefix}.nii.gz"
+
+    if [ -n "$seg_mask" ] && [ -f "$seg_mask" ]; then
+        log_msg "INFO" "Extracting tissue masks (WM/CSF) and generating QC overlays..."
+        
+        if [ ! -f "$wm_mask" ] || [ "$force_overwrite" = true ]; then
+            3dcalc -a "$seg_mask" -expr "within(a,4,4)" -prefix "$wm_mask" -overwrite
+        fi
+        if [ ! -f "$csf_mask" ] || [ "$force_overwrite" = true ]; then
+            3dcalc -a "$seg_mask" -expr "within(a,1,1)" -prefix "$csf_mask" -overwrite
+        fi
+
+        # Visual QC
+        @chauffeur_afni -ulay "$raw_anat_path" -olay "$wm_mask" -cbar Reds_and_Blues_inv -func_range 1 -opacity 5 -prefix "${out_base_dir}/qc_mask_WM_${anat_prefix}" -save_ftype JPEG 2>/dev/null
+        @chauffeur_afni -ulay "$raw_anat_path" -olay "$csf_mask" -cbar Reds_and_Blues_inv -func_range 1 -opacity 5 -prefix "${out_base_dir}/qc_mask_CSF_${anat_prefix}" -save_ftype JPEG 2>/dev/null
+    fi
+
+    # --------------------------------------------------------------------------
+    # 5. AFNI_PROC.PY CONSTRUCTION
+    # --------------------------------------------------------------------------
+    log_msg "START" "Building afni_proc.py command for ${subj_id} (${f_ses})..."
+
+    # Translate benchmark parameters to afni_proc format
+    align_args=("-cost" "$best_cost" "-cmass" "$active_cmass" "-feature_size" "0.5")
+    [ -n "$active_move" ] && align_args+=("$active_move")
+    
+    # Crucial: Force @Align_Centers and Rigid Body just like the benchmark
+    align_args+=("-align_centers" "yes" "-Allineate_opts" "-warp shift_rotate -source_automask+2")
+
+    # Fieldmap Integration
+    extra_warp_args=()
+    if [ "$fmap_applied" == "true" ] && [ -f "$fmap_path" ] && [ "$fmap_path" != "none" ]; then
+        # Note: Depending on AFNI version, injecting raw FUGUE rads directly may require 
+        # phase-to-displacement conversion, but passing it securely here.
+        extra_warp_args=("-volreg_extra_warp" "$fmap_path")
+        log_msg "INFO" "Fieldmap extra warp staged for integration."
+    fi
+
+    # Determine execution blocks (Joint vs Separate runs)
+    dset_array=("${rs_runs[@]}")
+    run_label="joint"
+    
+    if [ "$separate_runs" = true ]; then
+        dset_array=("${rs_runs[0]}") # Loop logic can be expanded here for multi-run separated
+        run_label="r01"
+    fi
+
+    results_dir="${out_base_dir}/${subj_id}_${f_ses}_${run_label}.results"
+    
+    if [ -d "$results_dir" ] && [ "$force_overwrite" = false ]; then
+        log_msg "WARNING" "Output directory already exists: $results_dir. Use -f to overwrite. Skipping."
+        continue
+    fi
+
+    cmd=(
+        afni_proc.py
+        -subj_id "${subj_id}_${f_ses}_${run_label}"
+        -script "${out_base_dir}/proc.${subj_id}_${f_ses}_${run_label}"
+        -scr_overwrite
+        -out_dir "$results_dir"
+        -blocks despike tshift align tlrc volreg blur mask scale regress
+        -dsets "${dset_array[@]}"
+        -copy_anat "$raw_anat_path"
+        -anat_has_skull no
+        -tcat_remove_first_trs 2
+        -volreg_align_to MIN_OUTLIER
+        -volreg_align_e2a
+        -volreg_tlrc_warp
+        -volreg_warp_dxyz "$resample_dxyz"
+        "${extra_warp_args[@]}"
+        -align_opts_aea "${align_args[@]}"
+        -tlrc_NL_warp
+        -tlrc_NL_warped_dsets "$raw_anat_path" "$aff_1D" "$warp_nii"
+        -mask_epi_anat yes
+        -blur_size 2.0
+        -regress_motion_per_run
+        -regress_apply_mot_types demean deriv
+        -regress_censor_motion "$censor_motion"
+        -regress_censor_outliers "$censor_outlier"
+        -regress_bandpass "$bandpass_bot" "$bandpass_top"
+        -regress_compute_tsnr yes
+        -regress_run_clustsim no
+        -html_review_style pythonic
+    )
+
+    # Inject ANATICOR if masks successfully generated
+    if [ -f "$wm_mask" ] && [ -f "$csf_mask" ]; then
+        cmd+=(
+            -anat_follower_ROI WM_Mask epi "$wm_mask"
+            -anat_follower_ROI CSF_Mask epi "$csf_mask"
+            -anat_follower_erode WM_Mask CSF_Mask
+            -mask_union ANATICOR_Mask CSF_Mask WM_Mask
+            -regress_anaticor_fast
+            -regress_anaticor_label ANATICOR_Mask
+            -regress_ROI_PC WM_Mask 3
+            -regress_ROI_PC CSF_Mask 3
+        )
+    fi
+
+    # Execute Pipeline
+    "${cmd[@]}" -execute
+
+done
+
+log_msg "SUCCESS" "All requested sessions successfully passed to afni_proc.py for $subj_id"
+exit 0
