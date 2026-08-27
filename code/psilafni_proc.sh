@@ -267,9 +267,17 @@ process_session() {
 
     local results_dir="${out_base_dir}/${subj_id}_${f_ses}_${run_label}.results"
 
-    if [ -d "$results_dir" ] && [ "$force_overwrite" = false ]; then
-        log_msg "WARNING" "Output directory already exists: $results_dir. Use -f to overwrite. Skipping."
-        return 0
+    # ======================================================================
+    # NUEVA LÓGICA DE LIMPIEZA FORZADA DE CARPETAS DE RESULTADOS
+    # ======================================================================
+    if [ -d "$results_dir" ]; then
+        if [ "$force_overwrite" = false ]; then
+            log_msg "WARNING" "Output directory already exists: $results_dir. Use -f to overwrite. Skipping."
+            return 0
+        else
+            log_msg "INFO" "Force overwrite active. Clearing previous results directory..."
+            rm -rf "$results_dir"
+        fi
     fi
 
     local cmd=(
