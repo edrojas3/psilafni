@@ -55,6 +55,7 @@ Required:
 
 Optional:
   -a <path>               : Path to @animal_warper folder (Default: <site_dir>/data_aw)
+  -t, --template <path>   : Path to standard template directory (Default: /AFNI/NMT_v2.1_sym/NMT_v2.1_sym_05mm)
   -ses <str>              : Process a specific session only (e.g., 'ses-001')
   -sep, --separate_runs   : Process each BOLD run individually (for Fingerprinting)
   -f, --force             : Overwrite existing output directories
@@ -64,14 +65,15 @@ EOF
     exit 0
 }
 
-if [ $# -eq 0 ] || [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]]; then 
-    show_help 
+if [ $# -eq 0 ] || [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]]; then
+    show_help
 fi
 
 site_dir=""
 subj_id=""
 aw_dir=""
 user_ses=""
+template_dir=""
 separate_runs=false
 force_overwrite=false
 censor_motion="0.30"
@@ -85,10 +87,11 @@ while [[ $# -gt 0 ]]; do
         -d) site_dir="$2"; shift 2 ;;
         -s) subj_id="$2"; shift 2 ;;
         -a) aw_dir="$2"; shift 2 ;;
+        -t|--template) template_dir="$2"; shift 2 ;;
         -ses|-p) user_ses="$2"; shift 2 ;;
         -sep|--separate_runs) separate_runs=true; shift 1 ;;
         -f|--force|--overwrite) force_overwrite=true; shift 1 ;;
-        *) shift 1 ;; 
+        *) shift 1 ;;
     esac
 done
 
@@ -98,6 +101,14 @@ if [ -z "$site_dir" ] || [ -z "$subj_id" ]; then
 fi
 
 [ -z "$aw_dir" ] && aw_dir="${site_dir}/data_aw"
+[ -z "$template_dir" ] && template_dir="/AFNI/NMT_v2.1_sym/NMT_v2.1_sym_05mm"
+
+# Locate the Skull-Stripped Template Volume
+refvol=$(find "$template_dir" -type f -name "*_SS.nii*" | head -n 1)
+if [ -z "$refvol" ]; then
+    log_msg "ERROR" "Template skull-stripped volume (*_SS.nii*) not found in $template_dir"
+    exit 1
+fi
 
 subj_dir="${site_dir}/${subj_id}"
 aw_subj_dir="${aw_dir}/${subj_id}"
@@ -131,6 +142,7 @@ echo "======================================================================"
 echo "          STARTING PSILAFNI PREPROCESSING PIPELINE (v1.0)             "
 echo " Subject ID        : $subj_id"
 echo " Site Directory    : $site_dir"
+echo " Template Base     : $refvol"
 echo " Benchmark TSV     : $master_tsv"
 echo " Run Mode          : $( [ "$separate_runs" = true ] && echo "SEPARATE RUNS" || echo "JOINT RUNS (DEFAULT)" )"
 echo "======================================================================"
@@ -139,10 +151,10 @@ echo "======================================================================"
 # 2. SESSION EXECUTION LOOP
 # ==============================================================================
 for f_ses in "${func_sessions[@]}"; do
-    
+
     ses_data_dir="${subj_dir}/${f_ses}"
     [ "$f_ses" == "no_ses" ] && ses_data_dir="$subj_dir"
-    
+
     out_base_dir="${site_dir}/data_ap/${subj_id}/${f_ses}/$([ "$separate_runs" = true ] && echo "separate_runs" || echo "joint_runs")"
     mkdir -p "$out_base_dir"
 
@@ -153,7 +165,7 @@ for f_ses in "${func_sessions[@]}"; do
 
         # Locate Resting BOLD Runs
         mapfile -t rs_runs < <(find "$ses_data_dir" -type f \( -name "*task-rest*bold*.nii*" -o -name "*task-resting*bold*.nii*" \) ! -name "*fmap*" ! -name "*magnitude*" ! -name "*phasediff*" ! -name "*dir-*" | sort)
-        
+
         if [ ${#rs_runs[@]} -eq 0 ]; then
             log_msg "WARNING" "No resting BOLD runs found for session $f_ses. Skipping."
             continue
@@ -163,7 +175,7 @@ for f_ses in "${func_sessions[@]}"; do
         # 3. HARVEST BENCHMARK PARAMETERS FROM TSV
         # --------------------------------------------------------------------------
         matched_row=$(awk -F'\t' -v s="$subj_id" -v ses="$f_ses" '$1 == s && $2 == ses {print $0}' "$master_tsv" | tr -d '\r' | tail -n 1)
-        
+
         if [ -z "$matched_row" ]; then
             log_msg "ERROR" "No benchmark entry found for ${subj_id} (${f_ses}) in TSV. Skipping."
             continue
@@ -226,7 +238,7 @@ for f_ses in "${func_sessions[@]}"; do
 
             if [ "$fmap_applied" == "true" ] && [ -f "$fmap_path" ] && [ "$fmap_path" != "none" ]; then
                 log_msg "INFO" "Applying FSL fugue unwarping to $r_name..."
-                
+
                 3dcopy "$run_file" "${temp_fmap_dir}/temp_in.nii.gz" -overwrite
 
                 if fugue -i "${temp_fmap_dir}/temp_in.nii.gz" \
@@ -256,14 +268,14 @@ for f_ses in "${func_sessions[@]}"; do
 
         dset_array=("${processed_runs[@]}")
         run_label="joint"
-        
+
         if [ "$separate_runs" = true ]; then
             dset_array=("${processed_runs[0]}")
             run_label="r01"
         fi
 
         results_dir="${out_base_dir}/${subj_id}_${f_ses}_${run_label}.results"
-        
+
         if [ -d "$results_dir" ] && [ "$force_overwrite" = false ]; then
             log_msg "WARNING" "Output directory already exists: $results_dir. Use -f to overwrite. Skipping."
             continue
@@ -285,6 +297,7 @@ for f_ses in "${func_sessions[@]}"; do
             -volreg_tlrc_warp
             -volreg_warp_dxyz "$resample_dxyz"
             -align_opts_aea "${align_args[@]}"
+            -tlrc_base "$refvol"                      
             -tlrc_NL_warp
             -tlrc_NL_warped_dsets "$raw_anat_path" "$aff_1D" "$warp_nii"
             -mask_epi_anat yes
