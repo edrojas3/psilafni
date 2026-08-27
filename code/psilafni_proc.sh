@@ -103,7 +103,6 @@ fi
 [ -z "$aw_dir" ] && aw_dir="${site_dir}/data_aw"
 [ -z "$template_dir" ] && template_dir="/AFNI/NMT_v2.1_sym/NMT_v2.1_sym_05mm"
 
-# Locate the Skull-Stripped Template Volume
 refvol=$(find "$template_dir" -type f -name "*_SS.nii*" | head -n 1)
 if [ -z "$refvol" ]; then
     log_msg "ERROR" "Template skull-stripped volume (*_SS.nii*) not found in $template_dir"
@@ -148,192 +147,196 @@ echo " Run Mode          : $( [ "$separate_runs" = true ] && echo "SEPARATE RUNS
 echo "======================================================================"
 
 # ==============================================================================
-# 2. SESSION EXECUTION LOOP
+# 2. CORE SESSION PROCESSING FUNCTION
 # ==============================================================================
-for f_ses in "${func_sessions[@]}"; do
+process_session() {
+    local f_ses="$1"
+    
+    log_msg "START" "Processing session ${f_ses} for subject ${subj_id}..."
 
-    ses_data_dir="${subj_dir}/${f_ses}"
+    local ses_data_dir="${subj_dir}/${f_ses}"
     [ "$f_ses" == "no_ses" ] && ses_data_dir="$subj_dir"
 
-    out_base_dir="${site_dir}/data_ap/${subj_id}/${f_ses}/$([ "$separate_runs" = true ] && echo "separate_runs" || echo "joint_runs")"
+    local out_base_dir="${site_dir}/data_ap/${subj_id}/${f_ses}/$([ "$separate_runs" = true ] && echo "separate_runs" || echo "joint_runs")"
     mkdir -p "$out_base_dir"
 
-    log_file="${out_base_dir}/proc_${subj_id}_${f_ses}.log"
+    # Locate Resting BOLD Runs
+    mapfile -t rs_runs < <(find "$ses_data_dir" -type f \( -name "*task-rest*bold*.nii*" -o -name "*task-resting*bold*.nii*" \) ! -name "*fmap*" ! -name "*magnitude*" ! -name "*phasediff*" ! -name "*dir-*" | sort)
 
-    {
-        log_msg "START" "Processing session ${f_ses} for subject ${subj_id}..."
+    if [ ${#rs_runs[@]} -eq 0 ]; then
+        log_msg "WARNING" "No resting BOLD runs found for session $f_ses. Skipping."
+        return 0
+    fi
 
-        # Locate Resting BOLD Runs
-        mapfile -t rs_runs < <(find "$ses_data_dir" -type f \( -name "*task-rest*bold*.nii*" -o -name "*task-resting*bold*.nii*" \) ! -name "*fmap*" ! -name "*magnitude*" ! -name "*phasediff*" ! -name "*dir-*" | sort)
+    # 3. HARVEST BENCHMARK PARAMETERS FROM TSV
+    local matched_row
+    matched_row=$(awk -F'\t' -v s="$subj_id" -v ses="$f_ses" '$1 == s && $2 == ses {print $0}' "$master_tsv" | tr -d '\r' | tail -n 1)
 
-        if [ ${#rs_runs[@]} -eq 0 ]; then
-            log_msg "WARNING" "No resting BOLD runs found for session $f_ses. Skipping."
-            continue
+    if [ -z "$matched_row" ]; then
+        log_msg "ERROR" "No benchmark entry found for ${subj_id} (${f_ses}) in TSV. Skipping."
+        return 0
+    fi
+
+    local fmap_applied=$(echo "$matched_row" | awk -F'\t' '{print $4}')
+    local active_move=$(echo "$matched_row" | awk -F'\t' '{print $6}')
+    local active_cmass=$(echo "$matched_row" | awk -F'\t' '{print $7}')
+    local best_cost=$(echo "$matched_row" | awk -F'\t' '{print $8}')
+    local dwell_time=$(echo "$matched_row" | awk -F'\t' '{print $10}')
+    local raw_anat_path=$(echo "$matched_row" | awk -F'\t' '{print $11}')
+    local fmap_path=$(echo "$matched_row" | awk -F'\t' '{print $12}')
+
+    [ "$active_move" == "none" ] && active_move=""
+    [ -z "$dwell_time" ] && dwell_time="0.0006500"
+    log_msg "INFO" "Harvested Params -> Cost: $best_cost | Move: ${active_move:-default} | CMass: $active_cmass | Fmap: $fmap_applied"
+
+    # 4. Resolve Animal Warper Matrices (and Standard Space Anatomy)
+    local anat_base_dir=$(dirname "$raw_anat_path")
+    local anat_prefix=$(basename "$raw_anat_path" | sed -E 's/(_nsu.*|\+orig.*)$//')
+    
+    local aff_1D=$(find "$aw_subj_dir" -type f -name "*${anat_prefix}*composite_linear_to_template.1D" | head -n 1)
+    local warp_nii=$(find "$aw_subj_dir" -type f \( -name "*${anat_prefix}*shft_WARP.nii.gz" -o -name "*${anat_prefix}*WARP.nii.gz" \) | head -n 1)
+    local anat_std=$(find "$aw_subj_dir" -type f -name "*${anat_prefix}*warp2std_nsu.nii*" | head -n 1)
+    local seg_mask=$(find "$aw_subj_dir" -type f -name "SEG_in_*${anat_prefix}*.nii*" | head -n 1)
+
+    if [ -z "$aff_1D" ] || [ -z "$warp_nii" ] || [ -z "$anat_std" ]; then
+        log_msg "ERROR" "Missing Animal Warper matrices or warp2std anatomy for $anat_prefix. Skipping."
+        return 0
+    fi
+
+    # 5. TISSUE MASK EXTRACTION & QC
+    local wm_mask="${anat_base_dir}/WM_in_${anat_prefix}.nii.gz"
+    local csf_mask="${anat_base_dir}/CSF_in_${anat_prefix}.nii.gz"
+
+    if [ -n "$seg_mask" ] && [ -f "$seg_mask" ]; then
+        log_msg "INFO" "Extracting tissue masks (WM/CSF) and generating QC overlays..."
+        if [ ! -f "$wm_mask" ] || [ "$force_overwrite" = true ]; then
+            3dcalc -a "$seg_mask" -expr "within(a,4,4)" -prefix "$wm_mask" -overwrite
+        fi
+        if [ ! -f "$csf_mask" ] || [ "$force_overwrite" = true ]; then
+            3dcalc -a "$seg_mask" -expr "within(a,1,1)" -prefix "$csf_mask" -overwrite
         fi
 
-        # --------------------------------------------------------------------------
-        # 3. HARVEST BENCHMARK PARAMETERS FROM TSV
-        # --------------------------------------------------------------------------
-        matched_row=$(awk -F'\t' -v s="$subj_id" -v ses="$f_ses" '$1 == s && $2 == ses {print $0}' "$master_tsv" | tr -d '\r' | tail -n 1)
+        @chauffeur_afni -ulay "$raw_anat_path" -olay "$wm_mask" -cbar Reds_and_Blues_inv -func_range 1 -opacity 5 -prefix "${out_base_dir}/qc_mask_WM_${anat_prefix}" -save_ftype JPEG 2>/dev/null
+        @chauffeur_afni -ulay "$raw_anat_path" -olay "$csf_mask" -cbar Reds_and_Blues_inv -func_range 1 -opacity 5 -prefix "${out_base_dir}/qc_mask_CSF_${anat_prefix}" -save_ftype JPEG 2>/dev/null
+    fi
 
-        if [ -z "$matched_row" ]; then
-            log_msg "ERROR" "No benchmark entry found for ${subj_id} (${f_ses}) in TSV. Skipping."
-            continue
-        fi
+    # 6. OPTION A: PRE-PROCESSING BOLD RUNS WITH FSL FUGUE
+    local processed_runs=()
+    local temp_fmap_dir="${out_base_dir}/_temp_unwarped"
+    mkdir -p "$temp_fmap_dir"
 
-        fmap_applied=$(echo "$matched_row" | awk -F'\t' '{print $4}')
-        active_move=$(echo "$matched_row" | awk -F'\t' '{print $6}')
-        active_cmass=$(echo "$matched_row" | awk -F'\t' '{print $7}')
-        best_cost=$(echo "$matched_row" | awk -F'\t' '{print $8}')
-        dwell_time=$(echo "$matched_row" | awk -F'\t' '{print $10}')
-        raw_anat_path=$(echo "$matched_row" | awk -F'\t' '{print $11}')
-        fmap_path=$(echo "$matched_row" | awk -F'\t' '{print $12}')
+    for run_file in "${rs_runs[@]}"; do
+        local r_name=$(basename "$run_file")
+        local clean_name="${r_name%.nii*}.nii.gz"
+        local out_unwarped="${temp_fmap_dir}/unwarped_${clean_name}"
 
-        [ "$active_move" == "none" ] && active_move=""
-        [ -z "$dwell_time" ] && dwell_time="0.0006500"
-        log_msg "INFO" "Harvested Params -> Cost: $best_cost | Move: ${active_move:-default} | CMass: $active_cmass | Fmap: $fmap_applied"
+        if [ "$fmap_applied" == "true" ] && [ -f "$fmap_path" ] && [ "$fmap_path" != "none" ]; then
+            log_msg "INFO" "Applying FSL fugue unwarping to $r_name..."
+            3dcopy "$run_file" "${temp_fmap_dir}/temp_in.nii.gz" -overwrite
 
-        # Resolve Animal Warper Matrices
-        anat_base_dir=$(dirname "$raw_anat_path")
-        anat_prefix=$(basename "$raw_anat_path" | sed -E 's/(_nsu.*|\+orig.*)$//')
-        aff_1D=$(find "$aw_subj_dir" -type f -name "*${anat_prefix}*composite_linear_to_template.1D" | head -n 1)
-        warp_nii=$(find "$aw_subj_dir" -type f \( -name "*${anat_prefix}*shft_WARP.nii.gz" -o -name "*${anat_prefix}*WARP.nii.gz" \) | head -n 1)
-        seg_mask=$(find "$aw_subj_dir" -type f -name "SEG_in_*${anat_prefix}*.nii*" | head -n 1)
-
-        if [ -z "$aff_1D" ] || [ -z "$warp_nii" ]; then
-            log_msg "ERROR" "Missing Animal Warper affine (.1D) or non-linear warp for $anat_prefix. Skipping."
-            continue
-        fi
-
-        # --------------------------------------------------------------------------
-        # 4. TISSUE MASK EXTRACTION & QC
-        # --------------------------------------------------------------------------
-        wm_mask="${anat_base_dir}/WM_in_${anat_prefix}.nii.gz"
-        csf_mask="${anat_base_dir}/CSF_in_${anat_prefix}.nii.gz"
-
-        if [ -n "$seg_mask" ] && [ -f "$seg_mask" ]; then
-            log_msg "INFO" "Extracting tissue masks (WM/CSF) and generating QC overlays..."
-            if [ ! -f "$wm_mask" ] || [ "$force_overwrite" = true ]; then
-                3dcalc -a "$seg_mask" -expr "within(a,4,4)" -prefix "$wm_mask" -overwrite
-            fi
-            if [ ! -f "$csf_mask" ] || [ "$force_overwrite" = true ]; then
-                3dcalc -a "$seg_mask" -expr "within(a,1,1)" -prefix "$csf_mask" -overwrite
-            fi
-
-            @chauffeur_afni -ulay "$raw_anat_path" -olay "$wm_mask" -cbar Reds_and_Blues_inv -func_range 1 -opacity 5 -prefix "${out_base_dir}/qc_mask_WM_${anat_prefix}" -save_ftype JPEG 2>/dev/null
-            @chauffeur_afni -ulay "$raw_anat_path" -olay "$csf_mask" -cbar Reds_and_Blues_inv -func_range 1 -opacity 5 -prefix "${out_base_dir}/qc_mask_CSF_${anat_prefix}" -save_ftype JPEG 2>/dev/null
-        fi
-
-        # --------------------------------------------------------------------------
-        # 5. OPTION A: PRE-PROCESSING BOLD RUNS WITH FSL FUGUE (FIELDMAP UNWARPING)
-        # --------------------------------------------------------------------------
-        processed_runs=()
-        temp_fmap_dir="${out_base_dir}/_temp_unwarped"
-        mkdir -p "$temp_fmap_dir"
-
-        for run_file in "${rs_runs[@]}"; do
-            r_name=$(basename "$run_file")
-            clean_name="${r_name%.nii*}.nii.gz"
-            out_unwarped="${temp_fmap_dir}/unwarped_${clean_name}"
-
-            if [ "$fmap_applied" == "true" ] && [ -f "$fmap_path" ] && [ "$fmap_path" != "none" ]; then
-                log_msg "INFO" "Applying FSL fugue unwarping to $r_name..."
-
-                3dcopy "$run_file" "${temp_fmap_dir}/temp_in.nii.gz" -overwrite
-
-                if fugue -i "${temp_fmap_dir}/temp_in.nii.gz" \
-                         --dwell="$dwell_time" \
-                         --loadfmap="$fmap_path" \
-                         -u "$out_unwarped"; then
-                    processed_runs+=("$out_unwarped")
-                    log_msg "SUCCESS" "Unwarped run ready: $out_unwarped"
-                else
-                    log_msg "WARNING" "Fugue failed for $r_name. Falling back to original raw run."
-                    processed_runs+=("$run_file")
-                fi
-                rm -f "${temp_fmap_dir}/temp_in.nii.gz"
+            if fugue -i "${temp_fmap_dir}/temp_in.nii.gz" \
+                     --dwell="$dwell_time" \
+                     --loadfmap="$fmap_path" \
+                     -u "$out_unwarped"; then
+                processed_runs+=("$out_unwarped")
+                log_msg "SUCCESS" "Unwarped run ready: $out_unwarped"
             else
+                log_msg "WARNING" "Fugue failed for $r_name. Falling back to original raw run."
                 processed_runs+=("$run_file")
             fi
-        done
-
-        # --------------------------------------------------------------------------
-        # 6. AFNI_PROC.PY CONSTRUCTION & EXECUTION
-        # --------------------------------------------------------------------------
-        log_msg "START" "Building afni_proc.py command for ${subj_id} (${f_ses})..."
-
-        align_args=("-cost" "$best_cost" "-cmass" "$active_cmass" "-feature_size" "0.5")
-        [ -n "$active_move" ] && align_args+=("$active_move")
-        align_args+=("-align_centers" "yes" "-Allineate_opts" "-warp shift_rotate -source_automask+2")
-
-        dset_array=("${processed_runs[@]}")
-        run_label="joint"
-
-        if [ "$separate_runs" = true ]; then
-            dset_array=("${processed_runs[0]}")
-            run_label="r01"
+            rm -f "${temp_fmap_dir}/temp_in.nii.gz"
+        else
+            processed_runs+=("$run_file")
         fi
+    done
 
-        results_dir="${out_base_dir}/${subj_id}_${f_ses}_${run_label}.results"
+    # 7. AFNI_PROC.PY CONSTRUCTION & EXECUTION
+    log_msg "START" "Building afni_proc.py command for ${subj_id} (${f_ses})..."
 
-        if [ -d "$results_dir" ] && [ "$force_overwrite" = false ]; then
-            log_msg "WARNING" "Output directory already exists: $results_dir. Use -f to overwrite. Skipping."
-            continue
-        fi
+    local align_args=("-cost" "$best_cost" "-cmass" "$active_cmass" "-feature_size" "0.5")
+    [ -n "$active_move" ] && align_args+=("$active_move")
+    align_args+=("-align_centers" "yes" "-Allineate_opts" "-warp shift_rotate -source_automask+2")
 
-        cmd=(
-            afni_proc.py
-            -subj_id "${subj_id}_${f_ses}_${run_label}"
-            -script "${out_base_dir}/proc.${subj_id}_${f_ses}_${run_label}"
-            -scr_overwrite
-            -out_dir "$results_dir"
-            -blocks despike tshift align tlrc volreg blur mask scale regress
-            -dsets "${dset_array[@]}"
-            -copy_anat "$raw_anat_path"
-            -anat_has_skull no
-            -tcat_remove_first_trs 2
-            -volreg_align_to MIN_OUTLIER
-            -volreg_align_e2a
-            -volreg_tlrc_warp
-            -volreg_warp_dxyz "$resample_dxyz"
-            -align_opts_aea "${align_args[@]}"
-            -tlrc_base "$refvol"                      
-            -tlrc_NL_warp
-            -tlrc_NL_warped_dsets "$raw_anat_path" "$aff_1D" "$warp_nii"
-            -mask_epi_anat yes
-            -blur_size 2.0
-            -regress_motion_per_run
-            -regress_apply_mot_types demean deriv
-            -regress_censor_motion "$censor_motion"
-            -regress_censor_outliers "$censor_outlier"
-            -regress_bandpass "$bandpass_bot" "$bandpass_top"
-            -regress_compute_tsnr yes
-            -regress_run_clustsim no
-            -html_review_style pythonic
+    local dset_array=("${processed_runs[@]}")
+    local run_label="joint"
+
+    if [ "$separate_runs" = true ]; then
+        dset_array=("${processed_runs[0]}")
+        run_label="r01"
+    fi
+
+    local results_dir="${out_base_dir}/${subj_id}_${f_ses}_${run_label}.results"
+
+    if [ -d "$results_dir" ] && [ "$force_overwrite" = false ]; then
+        log_msg "WARNING" "Output directory already exists: $results_dir. Use -f to overwrite. Skipping."
+        return 0
+    fi
+
+    local cmd=(
+        afni_proc.py
+        -subj_id "${subj_id}_${f_ses}_${run_label}"
+        -script "${out_base_dir}/proc.${subj_id}_${f_ses}_${run_label}"
+        -scr_overwrite
+        -out_dir "$results_dir"
+        -blocks despike tshift align tlrc volreg blur mask scale regress
+        -dsets "${dset_array[@]}"
+        -copy_anat "$raw_anat_path"
+        -anat_has_skull no
+        -tcat_remove_first_trs 2
+        -volreg_align_to MIN_OUTLIER
+        -volreg_align_e2a
+        -volreg_tlrc_warp
+        -volreg_warp_dxyz "$resample_dxyz"
+        -align_opts_aea "${align_args[@]}"
+        -tlrc_base "$refvol"                      
+        -tlrc_NL_warp
+        -tlrc_NL_warped_dsets "$anat_std" "$aff_1D" "$warp_nii"
+        -mask_epi_anat yes
+        -blur_size 2.0
+        -regress_motion_per_run
+        -regress_apply_mot_types demean deriv
+        -regress_censor_motion "$censor_motion"
+        -regress_censor_outliers "$censor_outlier"
+        -regress_bandpass "$bandpass_bot" "$bandpass_top"
+        -regress_compute_tsnr yes
+        -regress_run_clustsim no
+        -html_review_style pythonic
+    )
+
+    if [ -f "$wm_mask" ] && [ -f "$csf_mask" ]; then
+        cmd+=(
+            -anat_follower_ROI WM_Mask epi "$wm_mask"
+            -anat_follower_ROI CSF_Mask epi "$csf_mask"
+            -anat_follower_erode WM_Mask CSF_Mask
+            -mask_union ANATICOR_Mask CSF_Mask WM_Mask
+            -regress_anaticor_fast
+            -regress_anaticor_label ANATICOR_Mask
+            -regress_ROI_PC WM_Mask 3
+            -regress_ROI_PC CSF_Mask 3
         )
+    fi
 
-        if [ -f "$wm_mask" ] && [ -f "$csf_mask" ]; then
-            cmd+=(
-                -anat_follower_ROI WM_Mask epi "$wm_mask"
-                -anat_follower_ROI CSF_Mask epi "$csf_mask"
-                -anat_follower_erode WM_Mask CSF_Mask
-                -mask_union ANATICOR_Mask CSF_Mask WM_Mask
-                -regress_anaticor_fast
-                -regress_anaticor_label ANATICOR_Mask
-                -regress_ROI_PC WM_Mask 3
-                -regress_ROI_PC CSF_Mask 3
-            )
-        fi
+    # Execute Pipeline
+    "${cmd[@]}" -execute
 
-        # Execute Pipeline
-        "${cmd[@]}" -execute
+    # Cleanup temporary fugue unwarped runs to save disk space
+    rm -rf "$temp_fmap_dir"
 
-        # Cleanup temporary fugue unwarped runs to save disk space
-        rm -rf "$temp_fmap_dir"
+    log_msg "SUCCESS" "Successfully completed preprocessing for ${subj_id} (${f_ses})"
+    return 0
+}
 
-        log_msg "SUCCESS" "Successfully completed preprocessing for ${subj_id} (${f_ses})"
-
-    } 2>&1 | tee "$log_file"
+# ==============================================================================
+# 3. LOOP OVER SESSIONS AND REDIRECT LOG
+# ==============================================================================
+for f_ses in "${func_sessions[@]}"; do
+    
+    out_base_dir="${site_dir}/data_ap/${subj_id}/${f_ses}/$([ "$separate_runs" = true ] && echo "separate_runs" || echo "joint_runs")"
+    mkdir -p "$out_base_dir"
+    log_file="${out_base_dir}/proc_${subj_id}_${f_ses}.log"
+    
+    # Process session and safely tee to log without trapping subshell commands
+    process_session "$f_ses" 2>&1 | tee "$log_file"
 
 done
 
