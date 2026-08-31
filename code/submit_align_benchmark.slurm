@@ -25,7 +25,7 @@ SUBJ_ID="$2"
 
 # Cluster container and script paths
 CONTAINER="/project/rrg-mchakrav-ab/afajardo/containers/afni.sif"
-BENCHMARK_SCRIPT="/project/rrg-mchakrav-ab/afajardo/github/psilafni/code/align_epi2anat_benchmark_v6.sh"
+BENCHMARK_SCRIPT="/project/rrg-mchakrav-ab/afajardo/github/psilafni/code/align_epi2anat_benchmark_v7.sh"
 AW_DIR="${SITE_DIR}/data_aw"
 
 # Validate mandatory arguments
